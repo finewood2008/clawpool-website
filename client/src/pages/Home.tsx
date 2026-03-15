@@ -18,7 +18,7 @@ const IMGS = {
   verticalShowcase: `${CDN}/clawpool_vertical_showcase_no_glow_1_9526b701.webp`,
   coding: `${CDN}/clawpool_coding_final_corrected_1_e2b35fc1.webp`,
   research: `${CDN}/clawpool_research_helper_mini_size_1_f336e519.webp`,
-  sceneBoot: `${CDN}/scene_D_boot_c864eea1.webp`,
+  sceneBoot: `${CDN}/scene_D_boot_11e12620.webp`,
   studioScene: `${CDN}/clawpool_studio_scene_no_glow_1_6396fe9d.webp`,
   workstation: `${CDN}/scene_E_workstation_ai_34641bb1.webp`,
   logoLight: `${CDN}/logo_dark_bg_cd6e8d3d.webp`,
@@ -117,6 +117,23 @@ const T = {
     compatLabel: "兼容性 · Compatibility",
     recommended: "推荐",
     emotionLabel: "8 种情感状态：",
+    waitlistTitle: "加入 Kickstarter 等待列表",
+    waitlistDesc: "第一时间获取早鸟价格通知，限量 500 名早鸟支持者享受最高折扣。",
+    waitlistPlaceholder: "输入你的邮箱地址",
+    waitlistCta: "加入等待列表",
+    waitlistNote: "我们不会发送垃圾邮件，随时可以退订。",
+    waitlistSuccess: "已加入等待列表！我们会在 Kickstarter 上线时第一时间通知你。",
+    faqLabel: "常见问题 · FAQ",
+    faqTitle1: "你想知道的",
+    faqTitle2: "都在这里。",
+    faqs: [
+      { q: "ClawPool 兼容哪些 Mac Mini 型号？", a: "ClawPool 专为 Mac Mini M2（2023）、M2 Pro（2023）、M4（2024）和 M4 Pro（2024）设计。由于 Mac Mini 底部接口位置一致，未来新款 Mac Mini 也可能兼容。" },
+      { q: "AI 安全边界是如何工作的？", a: "ClawPool 内置独立 NVMe SSD 作为 AI 专属存储（AI HUB 资料库）。OpenClaw AI 的所有文件读写权限被严格限制在这块 SSD 内，通过硬件级权限控制实现物理隔离——AI 无法访问你的 macOS 系统目录、个人文档或桌面文件。" },
+      { q: "磁吸旋钮离开底座后还能工作吗？", a: "可以。AI 情感模块是一个完全独立的 WiFi 设备，内置 400mAh 电池，续航 6-8 小时。从底座取下后，它通过局域网继续与你的 Mac 通信，可放置在家中任意位置使用。归位底座后通过 Pogo Pin 自动充电。" },
+      { q: "140W GaN 供电是否足够驱动 Mac Mini M4 Pro？", a: "是的。Mac Mini M4 Pro 官方推荐电源为 140W，ClawPool 内置 140W GaN 电源完全满足需求。通过单根 Thunderbolt 4 线缆同时完成供电和数据传输，真正实现一线连接。" },
+      { q: "Kickstarter 众筹什么时候开始？", a: "我们计划在 2025 年内发起 Kickstarter 众筹。加入等待列表，你将在众筹上线第一时间收到通知，并享有限量早鸟价格。" },
+      { q: "旗舰版的声源定位功能是什么？", a: "旗舰版 AI 模块搭载 2.8 英寸 AMOLED 屏幕和双轴舵机，支持声源定位转头功能——当你说话时，模块会自动转向声音来源方向，提供更自然的交互体验。" },
+    ],
   },
   en: {
     nav: ["Features", "Specs", "Use Cases", "Pricing"],
@@ -206,6 +223,23 @@ const T = {
     compatLabel: "Compatibility · 兼容性",
     recommended: "Recommended",
     emotionLabel: "8 Emotion States: ",
+    waitlistTitle: "Join the Kickstarter Waitlist",
+    waitlistDesc: "Be the first to know when we launch. Limited early-bird slots available at the best price.",
+    waitlistPlaceholder: "Enter your email address",
+    waitlistCta: "Join Waitlist",
+    waitlistNote: "No spam, ever. Unsubscribe anytime.",
+    waitlistSuccess: "You're on the list! We'll notify you the moment we go live on Kickstarter.",
+    faqLabel: "FAQ · 常见问题",
+    faqTitle1: "Everything You",
+    faqTitle2: "Want to Know.",
+    faqs: [
+      { q: "Which Mac Mini models is ClawPool compatible with?", a: "ClawPool is designed for Mac Mini M2 (2023), M2 Pro (2023), M4 (2024), and M4 Pro (2024). Since Mac Mini's bottom port layout is consistent, future models may also be compatible." },
+      { q: "How does the AI security boundary work?", a: "ClawPool includes a dedicated NVMe SSD as the AI-exclusive storage (AI HUB Library). All OpenClaw AI file read/write permissions are strictly limited to this SSD via hardware-level permission control — AI cannot access your macOS system directory, personal documents, or desktop files." },
+      { q: "Can the magnetic knob work when detached from the dock?", a: "Yes. The AI module is a fully standalone WiFi device with a built-in 400mAh battery lasting 6-8 hours. After detaching, it continues communicating with your Mac via LAN and can be placed anywhere in your home. It charges automatically via Pogo Pin when docked." },
+      { q: "Is 140W GaN power enough for Mac Mini M4 Pro?", a: "Yes. Apple recommends 140W for Mac Mini M4 Pro, and ClawPool's built-in 140W GaN power supply fully meets this requirement. A single Thunderbolt 4 cable simultaneously handles power and data — true one-cable connectivity." },
+      { q: "When does the Kickstarter campaign launch?", a: "We plan to launch on Kickstarter in 2025. Join the waitlist to be notified the moment we go live and secure limited early-bird pricing." },
+      { q: "What is the voice-tracking feature in the Flagship edition?", a: "The Flagship AI module features a 2.8-inch AMOLED display and dual-axis servo motors, enabling voice-source tracking — the module automatically turns toward the direction of your voice for a more natural interaction experience." },
+    ],
   },
 };
 
@@ -213,7 +247,17 @@ export default function Home() {
   const [lang, setLang] = useState<"zh" | "en">("zh");
   const [menuOpen, setMenuOpen] = useState(false);
   const [videoPlaying, setVideoPlaying] = useState(false);
+  const [waitlistEmail, setWaitlistEmail] = useState("");
+  const [waitlistSubmitted, setWaitlistSubmitted] = useState(false);
+  const [openFaq, setOpenFaq] = useState<number | null>(null);
   const t = T[lang];
+
+  const handleWaitlistSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (waitlistEmail.trim()) {
+      setWaitlistSubmitted(true);
+    }
+  };
 
   const navLinks = [
     { href: "#features", label: t.nav[0] },
@@ -384,6 +428,54 @@ export default function Home() {
         <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-40">
           <span className="text-xs font-mono tracking-widest text-white/50">SCROLL</span>
           <div className="w-px h-12 bg-gradient-to-b from-white/50 to-transparent" />
+        </div>
+      </section>
+
+      {/* ─── WAITLIST BANNER ─── */}
+      <section className="bg-[#0a1218] border-y border-white/8 py-10">
+        <div className="max-w-[1400px] mx-auto px-6 md:px-12 lg:px-16">
+          <div className="flex flex-col lg:flex-row items-center justify-between gap-8">
+            <div className="flex-1 max-w-xl">
+              <div className="flex items-center gap-2 mb-2">
+                <span className="w-2 h-2 rounded-full bg-[#E8341A] animate-pulse" />
+                <span className="text-xs font-mono text-[#E8341A] tracking-[0.15em] uppercase">
+                  {lang === "zh" ? "即将登陆 Kickstarter" : "Coming to Kickstarter"}
+                </span>
+              </div>
+              <h3 className="font-display text-2xl md:text-3xl font-black text-white mb-2">
+                {t.waitlistTitle}
+              </h3>
+              <p className="text-white/50 text-sm leading-relaxed">{t.waitlistDesc}</p>
+            </div>
+            <div className="flex-1 max-w-md w-full">
+              {waitlistSubmitted ? (
+                <div className="flex items-center gap-3 bg-[#4FC3F7]/10 border border-[#4FC3F7]/30 rounded-sm px-5 py-4">
+                  <span className="text-[#4FC3F7] text-xl">&#10003;</span>
+                  <p className="text-[#4FC3F7] text-sm font-medium">{t.waitlistSuccess}</p>
+                </div>
+              ) : (
+                <form onSubmit={handleWaitlistSubmit} className="flex flex-col sm:flex-row gap-3">
+                  <input
+                    type="email"
+                    required
+                    value={waitlistEmail}
+                    onChange={(e) => setWaitlistEmail(e.target.value)}
+                    placeholder={t.waitlistPlaceholder}
+                    className="flex-1 bg-white/5 border border-white/15 rounded-sm px-4 py-3 text-sm text-white placeholder:text-white/30 focus:outline-none focus:border-[#E8341A]/60 transition-colors"
+                  />
+                  <button
+                    type="submit"
+                    className="shrink-0 px-6 py-3 bg-[#E8341A] text-white text-sm font-semibold rounded-sm hover:bg-[#c42a14] transition-colors whitespace-nowrap"
+                  >
+                    {t.waitlistCta}
+                  </button>
+                </form>
+              )}
+              {!waitlistSubmitted && (
+                <p className="text-xs text-white/25 mt-2 font-mono">{t.waitlistNote}</p>
+              )}
+            </div>
+          </div>
         </div>
       </section>
 
@@ -652,37 +744,22 @@ export default function Home() {
       </section>
 
       {/* ─── FEATURE 3: I/O HUB — with front-flat product image ─── */}
-      <section className="py-24 md:py-32 bg-[#0D1B2A]">
-        <div className="max-w-[1400px] mx-auto px-6 md:px-12 lg:px-16">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-            {/* Left: FRONT FLAT product image */}
-            <div className="relative flex items-center justify-center">
-              <div className="absolute inset-0 bg-[#4FC3F7]/5 blur-[80px] rounded-full" />
-              {/* Dark card background to make the product pop */}
-              <div className="relative z-10 w-full max-w-[540px] mx-auto rounded-sm overflow-hidden">
-                <img
-                  src={IMGS.workstation}
-                  alt="ClawPool One Cable Setup"
-                  className="w-full h-[380px] object-cover object-center"
-                  style={{ filter: "drop-shadow(0 20px 50px rgba(79,195,247,0.15))" }}
-                />
-                {/* Port labels overlay at bottom */}
-                <div className="bg-[#060e18] border border-white/8 p-4 grid grid-cols-3 gap-2 mt-0">
-                  {[
-                    { label: "TB4 × 2", color: "#4FC3F7" },
-                    { label: "HDMI 2.1 × 2", color: "#4FC3F7" },
-                    { label: "USB-A × 4", color: "#E8341A" },
-                  ].map(p => (
-                    <div key={p.label} className="text-center py-1.5 border border-white/10 rounded text-xs font-mono" style={{ color: p.color }}>
-                      {p.label}
-                    </div>
-                  ))}
-                </div>
-              </div>
+      <section id="io" className="relative overflow-hidden">
+        <div className="grid grid-cols-1 lg:grid-cols-2 min-h-[680px]">
+            {/* Left: scene_D_boot full-bleed image */}
+            <div className="relative h-[420px] lg:h-auto overflow-hidden order-2 lg:order-1">
+              <img
+                src={IMGS.sceneBoot}
+                alt="ClawPool One Cable Setup"
+                className="w-full h-full object-cover object-center"
+              />
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent to-[#0D1B2A] hidden lg:block" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#0D1B2A] to-transparent lg:hidden" />
             </div>
 
             {/* Right: I/O specs */}
-            <div>
+            <div className="bg-[#0D1B2A] flex items-center px-8 md:px-12 lg:px-16 py-16 lg:py-24 order-1 lg:order-2">
+              <div className="max-w-xl w-full">
               <p className="text-xs font-mono text-[#4FC3F7] tracking-[0.2em] uppercase mb-4">{t.ioLabel}</p>
               <h2 className="font-display text-3xl md:text-4xl font-black leading-tight mb-6">
                 {t.ioTitle1}<br />
@@ -712,11 +789,10 @@ export default function Home() {
                   </div>
                 ))}
               </div>
+              </div>
             </div>
           </div>
-        </div>
       </section>
-
       {/* ─── USE CASES ─── */}
       <section id="usecases" className="relative py-24 md:py-32 overflow-hidden bg-[#060e18]">
         <div className="max-w-[1400px] mx-auto px-6 md:px-12 lg:px-16">
@@ -1007,6 +1083,63 @@ export default function Home() {
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ─── FAQ ─── */}
+      <section className="py-24 md:py-32 bg-[#0D1B2A]">
+        <div className="max-w-[1400px] mx-auto px-6 md:px-12 lg:px-16">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
+            {/* Left: heading */}
+            <div className="lg:sticky lg:top-28">
+              <p className="text-xs font-mono text-[#E8341A] tracking-[0.2em] uppercase mb-4">{t.faqLabel}</p>
+              <h2 className="font-display text-4xl md:text-5xl font-black leading-tight mb-6">
+                {t.faqTitle1}<br />
+                <span className="text-[#E8341A]">{t.faqTitle2}</span>
+              </h2>
+              <p className="text-white/40 text-base leading-relaxed mb-8">
+                {lang === "zh"
+                  ? "如果你有其他问题，欢迎通过 Kickstarter 页面联系我们。"
+                  : "Have more questions? Reach out to us on our Kickstarter page."}
+              </p>
+              <a href="https://kickstarter.com" target="_blank" rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-6 py-3 border border-white/20 text-white/60 text-sm font-medium rounded-sm hover:border-white/50 hover:text-white transition-all">
+                {lang === "zh" ? "前往 Kickstarter" : "Visit Kickstarter"} →
+              </a>
+            </div>
+
+            {/* Right: accordion */}
+            <div className="space-y-2">
+              {t.faqs.map((faq, i) => (
+                <div key={i}
+                  className={`border rounded-sm overflow-hidden transition-colors ${
+                    openFaq === i ? "border-[#E8341A]/40 bg-[#E8341A]/5" : "border-white/8 bg-white/2 hover:border-white/15"
+                  }`}>
+                  <button
+                    onClick={() => setOpenFaq(openFaq === i ? null : i)}
+                    className="w-full flex items-center justify-between px-6 py-4 text-left"
+                  >
+                    <span className="font-medium text-white/80 text-sm pr-4">{faq.q}</span>
+                    <span className={`shrink-0 w-5 h-5 flex items-center justify-center rounded-full border transition-all ${
+                      openFaq === i
+                        ? "border-[#E8341A] text-[#E8341A] rotate-45"
+                        : "border-white/20 text-white/40"
+                    }`}>
+                      <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+                        <line x1="5" y1="0" x2="5" y2="10" stroke="currentColor" strokeWidth="1.5" />
+                        <line x1="0" y1="5" x2="10" y2="5" stroke="currentColor" strokeWidth="1.5" />
+                      </svg>
+                    </span>
+                  </button>
+                  {openFaq === i && (
+                    <div className="px-6 pb-5">
+                      <p className="text-white/55 text-sm leading-relaxed">{faq.a}</p>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
