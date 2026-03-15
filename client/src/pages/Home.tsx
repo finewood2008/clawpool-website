@@ -271,14 +271,33 @@ export default function Home() {
 
       {/* ─── NAVBAR ─── */}
       <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 md:px-10 h-20 bg-[#0a1218]/95 backdrop-blur-md border-b border-white/10">
-        {/* Logo — large */}
-        <a href="#" className="flex items-center shrink-0">
-          <img
-            src={IMGS.logoLight}
-            alt="ClawPool"
-            className="h-14 md:h-16 w-auto object-contain"
-            style={{ filter: "drop-shadow(0 0 8px rgba(232,52,26,0.3))" }}
-          />
+        {/* Logo — icon + text */}
+        <a href="#" className="flex items-center gap-3 shrink-0">
+          {/* Icon only — crop just the claw icon part */}
+          <div className="relative shrink-0" style={{ filter: "drop-shadow(0 0 8px rgba(232,52,26,0.35))" }}>
+            <img
+              src={IMGS.logoLight}
+              alt=""
+              aria-hidden="true"
+              className="h-12 md:h-14 w-auto object-contain"
+              style={{ maxWidth: "56px" }}
+            />
+          </div>
+          {/* Text lockup */}
+          <div className="flex flex-col leading-none">
+            <span
+              className="font-display font-black text-white tracking-tight"
+              style={{ fontSize: "1.35rem", lineHeight: 1.1 }}
+            >
+              ClawPool
+            </span>
+            <span
+              className="font-mono text-white/55 tracking-[0.12em] uppercase"
+              style={{ fontSize: "0.6rem", marginTop: "3px" }}
+            >
+              AN OPENCLAW AI-DOCK
+            </span>
+          </div>
         </a>
 
         {/* Desktop nav */}
