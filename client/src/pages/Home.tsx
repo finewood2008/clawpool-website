@@ -211,6 +211,7 @@ const T = {
 export default function Home() {
   const [lang, setLang] = useState<"zh" | "en">("zh");
   const [menuOpen, setMenuOpen] = useState(false);
+  const [videoPlaying, setVideoPlaying] = useState(false);
   const t = T[lang];
 
   const navLinks = [
@@ -420,6 +421,148 @@ export default function Home() {
                   <p className="text-xs font-mono text-white/30 leading-relaxed">{p.spec}</p>
                 </div>
               </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ─── VIDEO SHOWCASE ─── */}
+      <section className="relative py-24 md:py-32 bg-[#060e18] overflow-hidden">
+        {/* Background grid */}
+        <div className="absolute inset-0 opacity-[0.03]"
+          style={{ backgroundImage: "linear-gradient(#4FC3F7 1px, transparent 1px), linear-gradient(90deg, #4FC3F7 1px, transparent 1px)", backgroundSize: "60px 60px" }} />
+        {/* Red glow top-left */}
+        <div className="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-[#E8341A]/10 blur-[100px] pointer-events-none" />
+        {/* Blue glow bottom-right */}
+        <div className="absolute -bottom-32 -right-32 w-96 h-96 rounded-full bg-[#4FC3F7]/10 blur-[100px] pointer-events-none" />
+
+        <div className="relative z-10 max-w-[1200px] mx-auto px-6 md:px-12">
+          {/* Section label */}
+          <div className="text-center mb-12">
+            <p className="text-xs font-mono text-[#E8341A] tracking-[0.25em] uppercase mb-4">
+              {lang === "zh" ? "产品演示 · PRODUCT DEMO" : "PRODUCT DEMO · 产品演示"}
+            </p>
+            <h2 className="font-display text-4xl md:text-5xl font-black leading-tight mb-4">
+              {lang === "zh" ? (
+                <>{"看它如何"}<br /><span className="text-[#E8341A]">{'改变你的工作台。'}</span></>
+              ) : (
+                <>{"See How It"}<br /><span className="text-[#E8341A]">{"Transforms Your Desk."}</span></>
+              )}
+            </h2>
+            <p className="text-white/40 text-base max-w-xl mx-auto">
+              {lang === "zh"
+                ? "一根线、一句话、一个底座——ClawPool 重新定义 Mac Mini 的使用方式。"
+                : "One cable, one voice, one dock — ClawPool redefines how you use Mac Mini."}
+            </p>
+          </div>
+
+          {/* Video player container */}
+          <div className="relative group rounded-sm overflow-hidden border border-white/10 shadow-2xl"
+            style={{ boxShadow: "0 0 80px rgba(232,52,26,0.12), 0 0 40px rgba(0,0,0,0.6)" }}>
+
+            {/* Aspect ratio wrapper 16:9 */}
+            <div className="relative w-full" style={{ paddingBottom: "56.25%" }}>
+
+              {/* Placeholder background — product image */}
+              <div className="absolute inset-0 bg-[#0D1B2A]">
+                <img
+                  src={IMGS.workstation}
+                  alt="ClawPool Product Demo"
+                  className="w-full h-full object-cover opacity-60"
+                />
+                {/* Dark overlay gradient */}
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0D1B2A]/80 via-[#0D1B2A]/30 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-br from-[#E8341A]/5 to-[#4FC3F7]/5" />
+              </div>
+
+              {/* HUD corner decorations */}
+              <div className="absolute top-4 left-4 w-8 h-8 border-t-2 border-l-2 border-[#E8341A]/60" />
+              <div className="absolute top-4 right-4 w-8 h-8 border-t-2 border-r-2 border-[#E8341A]/60" />
+              <div className="absolute bottom-4 left-4 w-8 h-8 border-b-2 border-l-2 border-[#E8341A]/60" />
+              <div className="absolute bottom-4 right-4 w-8 h-8 border-b-2 border-r-2 border-[#E8341A]/60" />
+
+              {/* Top-left badge */}
+              <div className="absolute top-6 left-6 flex items-center gap-2 bg-black/50 backdrop-blur-sm border border-white/10 px-3 py-1.5 rounded-sm">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#E8341A] animate-pulse" />
+                <span className="text-xs font-mono text-white/60 tracking-widest uppercase">
+                  {lang === "zh" ? "产品宣传片" : "PRODUCT FILM"}
+                </span>
+              </div>
+
+              {/* Duration badge */}
+              <div className="absolute top-6 right-6 bg-black/50 backdrop-blur-sm border border-white/10 px-3 py-1.5 rounded-sm">
+                <span className="text-xs font-mono text-white/50">02:30</span>
+              </div>
+
+              {/* Center play button */}
+              {!videoPlaying && (
+                <button
+                  onClick={() => setVideoPlaying(true)}
+                  className="absolute inset-0 flex flex-col items-center justify-center gap-5 group/play"
+                  aria-label="Play video"
+                >
+                  {/* Outer ring */}
+                  <div className="relative">
+                    <div className="absolute inset-0 rounded-full bg-[#E8341A]/20 scale-150 group-hover/play:scale-[1.8] transition-transform duration-500" />
+                    <div className="absolute inset-0 rounded-full bg-[#E8341A]/10 scale-[2.2] group-hover/play:scale-[2.6] transition-transform duration-700" />
+                    {/* Play circle */}
+                    <div className="relative w-20 h-20 md:w-24 md:h-24 rounded-full bg-[#E8341A] flex items-center justify-center shadow-lg group-hover/play:bg-[#c42a14] transition-colors duration-200"
+                      style={{ boxShadow: "0 0 40px rgba(232,52,26,0.5)" }}>
+                      {/* Play triangle */}
+                      <svg width="28" height="28" viewBox="0 0 24 24" fill="white" className="ml-1.5">
+                        <polygon points="5,3 19,12 5,21" />
+                      </svg>
+                    </div>
+                  </div>
+                  {/* Label */}
+                  <div className="text-center">
+                    <p className="text-white font-display font-bold text-lg md:text-xl tracking-wide">
+                      {lang === "zh" ? "观看产品演示" : "Watch Product Demo"}
+                    </p>
+                    <p className="text-white/40 text-sm font-mono mt-1">
+                      {lang === "zh" ? "视频即将上线" : "Video coming soon"}
+                    </p>
+                  </div>
+                </button>
+              )}
+
+              {/* Coming soon overlay (shown after click) */}
+              {videoPlaying && (
+                <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#0D1B2A]/95 gap-4">
+                  <div className="w-16 h-16 rounded-full border-2 border-[#E8341A]/40 flex items-center justify-center">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#E8341A" strokeWidth="1.5">
+                      <circle cx="12" cy="12" r="10" />
+                      <path d="M12 6v6l4 2" />
+                    </svg>
+                  </div>
+                  <p className="font-display font-bold text-xl text-white">
+                    {lang === "zh" ? "视频即将上线" : "Video Coming Soon"}
+                  </p>
+                  <p className="text-white/40 text-sm text-center max-w-xs">
+                    {lang === "zh"
+                      ? "我们正在制作产品宣传片，敬请期待。关注 Kickstarter 获取第一手资讯。"
+                      : "Our product film is in production. Follow our Kickstarter to be the first to watch."}
+                  </p>
+                  <button
+                    onClick={() => setVideoPlaying(false)}
+                    className="mt-2 px-5 py-2 border border-white/20 text-white/50 text-xs font-mono rounded-sm hover:border-white/40 hover:text-white transition-all">
+                    {lang === "zh" ? "返回" : "Go Back"}
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Bottom feature pills */}
+          <div className="flex flex-wrap justify-center gap-3 mt-8">
+            {(lang === "zh"
+              ? ["语音唤醒演示", "安全边界展示", "一根线连接", "磁吸旋钮拆装", "AI 工作流"]
+              : ["Voice Wake Demo", "Security Sandbox", "Single Cable Setup", "Magnetic Knob", "AI Workflow"]
+            ).map((tag) => (
+              <span key={tag}
+                className="px-4 py-1.5 bg-white/5 border border-white/10 rounded-sm text-xs font-mono text-white/40 tracking-wide">
+                {tag}
+              </span>
             ))}
           </div>
         </div>
