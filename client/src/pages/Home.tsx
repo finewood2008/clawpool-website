@@ -276,7 +276,7 @@ export default function Home() {
           <img
             src={IMGS.logoLight}
             alt="ClawPool"
-            className="h-10 md:h-12 w-auto object-contain"
+            className="h-14 md:h-16 w-auto object-contain"
             style={{ filter: "drop-shadow(0 0 8px rgba(232,52,26,0.3))" }}
           />
         </a>
