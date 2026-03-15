@@ -39,6 +39,7 @@ const T = {
     heroTitle2: "OpenClaw",
     heroTitle3: "硬件。",
     heroSub: "AN OPENCLAW AI-DOCK — The First OpenClaw Hardware",
+    heroTagline: "语音唤醒 · 安全存储 · 全接口扩展 · 140W GaN 供电 — 一根线，让 Mac Mini 进化为 AI 工作站。",
     heroDesc: "ClawPool 是全球首款内置 OpenClaw AI 的扩展坞，专为 Mac Mini 设计。它将语音 AI、安全存储与全接口扩展融为一体——让你的 Mac Mini 真正进化为 AI 工作站。",
     heroDescEn: "The world's first dock with built-in OpenClaw AI. Secure storage, full I/O, and voice control — all in one.",
     learnMore: "了解功能",
@@ -145,6 +146,7 @@ const T = {
     heroTitle2: "OpenClaw",
     heroTitle3: "Hardware.",
     heroSub: "AN OPENCLAW AI-DOCK — 第一款 OpenClaw 硬件",
+    heroTagline: "Voice AI · Secure Storage · Full I/O · 140W GaN — One cable to evolve your Mac Mini into an AI workstation.",
     heroDesc: "ClawPool is the world's first dock with built-in OpenClaw AI, designed for Mac Mini. It unifies voice AI, secure storage, and full I/O expansion — evolving your Mac Mini into a true AI workstation.",
     heroDescEn: "全球首款内置 OpenClaw AI 的扩展坞。安全存储、全接口扩展、语音控制——融为一体。",
     learnMore: "Explore Features",
@@ -387,8 +389,13 @@ export default function Home() {
                 {t.heroSub}
               </p>
 
+              {/* Tagline — core value proposition */}
+              <p className="text-base md:text-lg font-medium text-white/90 leading-snug max-w-lg mb-4 border-l-2 border-[#E8341A] pl-4">
+                {t.heroTagline}
+              </p>
+
               {/* Description — show only current language */}
-              <p className="text-base md:text-lg text-white/70 leading-relaxed max-w-lg mb-8">
+              <p className="text-sm text-white/50 leading-relaxed max-w-lg mb-8">
                 {t.heroDesc}
               </p>
 
