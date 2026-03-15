@@ -4,10 +4,10 @@
  * Theme: Dark (#0D1B2A base), Claw Red (#E8341A accent), Signal Blue (#4FC3F7 highlight)
  * Typography: Syne (display) + Space Mono (data/specs) + Inter (body)
  * Layout: Asymmetric split-screen, full-bleed imagery, editorial rhythm
- * Bilingual: Chinese primary, English secondary
+ * Bilingual: Chinese / English toggle
  */
 
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 
 const CDN = "https://d2xsxph8kpxj0f.cloudfront.net/310519663430257498/jfDsKVzTVmzoN4bJ42z8Cq";
 
@@ -19,102 +19,279 @@ const IMGS = {
   coding: `${CDN}/clawpool_coding_final_corrected_1_e2b35fc1.webp`,
   research: `${CDN}/clawpool_research_helper_mini_size_1_91436768.webp`,
   sceneBoot: `${CDN}/scene_D_boot_c864eea1.webp`,
-  logoLight: `${CDN}/logo_horizontal_light_v2_192c83f9.webp`,
+  studioScene: `${CDN}/clawpool_studio_scene_no_glow_1_6396fe9d.webp`,
+  workstation: `${CDN}/scene_E_workstation_ai_34641bb1.webp`,
+  logoLight: `${CDN}/logo_light_cropped_af279881.webp`,
   logoDark: `${CDN}/logo_horizontal_dark_e9f8c65d.webp`,
-  logoVerticalDark: `${CDN}/logo_vertical_dark_07d2b9f4.webp`,
   socialPost: `${CDN}/social_post_4568c578.png`,
 };
 
-// Animated counter hook
-function useCounter(target: number, duration = 2000, start = false) {
-  const [count, setCount] = useState(0);
-  useEffect(() => {
-    if (!start) return;
-    let startTime: number;
-    const step = (timestamp: number) => {
-      if (!startTime) startTime = timestamp;
-      const progress = Math.min((timestamp - startTime) / duration, 1);
-      setCount(Math.floor(progress * target));
-      if (progress < 1) requestAnimationFrame(step);
-    };
-    requestAnimationFrame(step);
-  }, [target, duration, start]);
-  return count;
-}
-
-// Intersection observer hook
-function useInView(threshold = 0.2) {
-  const ref = useRef<HTMLDivElement>(null);
-  const [inView, setInView] = useState(false);
-  useEffect(() => {
-    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) setInView(true); }, { threshold });
-    if (ref.current) obs.observe(ref.current);
-    return () => obs.disconnect();
-  }, [threshold]);
-  return { ref, inView };
-}
+// Bilingual content
+const T = {
+  zh: {
+    nav: ["功能", "规格", "使用场景", "定价"],
+    navEn: ["Features", "Specs", "Use Cases", "Pricing"],
+    cta: "支持众筹 →",
+    badge: "第一款 OpenClaw 硬件 · 即将登陆 Kickstarter",
+    heroTitle1: "第一款",
+    heroTitle2: "OpenClaw",
+    heroTitle3: "硬件。",
+    heroSub: "AN OPENCLAW AI-DOCK — The First OpenClaw Hardware",
+    heroDesc: "ClawPool 是全球首款内置 OpenClaw AI 的扩展坞，专为 Mac Mini 设计。它将语音 AI、安全存储与全接口扩展融为一体——让你的 Mac Mini 真正进化为 AI 工作站。",
+    heroDescEn: "The world's first dock with built-in OpenClaw AI. Secure storage, full I/O, and voice control — all in one.",
+    learnMore: "了解功能",
+    stat1: ["4TB", "最大存储", "MAX STORAGE"],
+    stat2: ["9+", "I/O 接口", "I/O PORTS"],
+    stat3: ["140W", "GaN 供电", "GAN POWER"],
+    stat4: ["3m", "拾音距离", "VOICE RANGE"],
+    whyTitle1: "三大能力，",
+    whyTitle2: "一个底座。",
+    whySub: "Three Capabilities. One Enclosure.",
+    whyDesc: "Mac Mini 是世界上性能最强的紧凑型电脑。ClawPool 让它成为真正的 AI 工作站——安全的 AI 专属存储、消除桌面杂乱的全接口扩展坞，以及懂你的语音 AI 助手。",
+    p1Title: "OpenClaw 语音 AI",
+    p1TitleEn: "OpenClaw Voice AI",
+    p1Desc: "说「Hey Claw」唤醒你的 Mac Mini，用自然语言启动应用、管理文件、自动化工作流。所有 NLP 推理在本地完成——你的声音数据永远不会离开桌面。",
+    p1Spec: "唤醒延迟 < 300ms · 6 麦环形阵列 · 3m 拾音 · 本地 NLP",
+    p2Title: "全接口扩展坞",
+    p2TitleEn: "Full I/O Hub",
+    p2Desc: "2× Thunderbolt 4、2× HDMI 2.1 4K@120Hz、2.5GbE 网口、4× USB-A 3.2、DisplayPort 1.4、UHS-II SD 卡槽——一根线连接 Mac Mini，140W GaN 同时供电。",
+    p2Spec: "TB4 40Gbps · HDMI 2.1 · 140W GaN · 2.5GbE · SD UHS-II",
+    p3Title: "AI 安全专属存储",
+    p3TitleEn: "Secure AI Storage",
+    p3Desc: "PCIe 4.0 NVMe（最高 4TB），AES-256 硬件加密。AI 的访问权限被严格限制在这块 SSD 内——无法访问你的 Mac 系统文件，物理隔离，真正安全。",
+    p3Spec: "PCIe 4.0 · 7,000 MB/s · AES-256 · 最高 4TB · 物理隔离",
+    secLabel: "核心安全机制 · Security",
+    secTitle1: "AI 只能访问",
+    secTitle2: "它自己的空间。",
+    secDesc: "ClawPool 采用「物理隔离 + 权限收敛」的安全架构。OpenClaw AI 的所有操作权限被严格限制在内置 NVMe SSD（AI HUB 资料库）内——它无法访问你的 macOS 系统目录、个人文档或桌面。",
+    secDescEn: "Physical isolation + permission convergence. AI operations are strictly sandboxed to the dedicated NVMe SSD. Your Mac system files are physically inaccessible to AI agents.",
+    secF1: "AI 只能读写 AI HUB 资料库，无法触碰系统文件",
+    secF2: "AES-256 硬件加密，密钥存储于独立安全芯片",
+    secF3: "插入 SD 卡自动触发导入流程，文件先进沙箱再处理",
+    secF4: "所有 NLP 推理本地完成，数据不上传云端",
+    voiceLabel: "语音 AI · Voice Control",
+    voiceTitle1: "磁吸旋钮，",
+    voiceTitle2: "随处可用。",
+    voiceDesc: "AI 情感模块是一个完全独立的 WiFi 设备——从底座取下后，它通过局域网继续与你的 Mac 通信。放在书桌上、床头柜上，或者客厅里，都能唤醒你的 Mac，执行指令。归位底座自动充电，无需额外线缆。",
+    voiceDescEn: "The AI module is a standalone WiFi device. Detach it anywhere in your home — it keeps communicating with your Mac via LAN. Dock to charge automatically.",
+    ioLabel: "接口扩展 · I/O Hub",
+    ioTitle1: "一根线，",
+    ioTitle2: "搞定一切。",
+    ioDesc: "One cable. Everything connected. 内置 140W GaN 电源，通过 Thunderbolt 4 同时为 Mac Mini 供电并传输数据，桌面零散线缆。",
+    usecaseLabel: "使用场景 · Use Cases",
+    usecaseTitle1: "为每一位",
+    usecaseTitle2: "创作者而生。",
+    usecaseSub: "Built for Every Creator.",
+    uc1Label: "开发者 / 工程师",
+    uc1Title: "语音驱动的开发工作流",
+    uc1Desc: "用语音启动服务、切换分支、运行测试。双 HDMI 2.1 支持多显示器，专注模式一句话触发。",
+    uc2Label: "设计师 / 创意工作者",
+    uc2Title: "创意工作室的 AI 搭档",
+    uc2Desc: "Wacom 绘板、摄影机、调色设备全部接入。语音指令切换工作流，AI 自动整理素材到专属存储库。",
+    uc3Label: "视频剪辑师 / 摄影师",
+    uc3Title: "高速存储 + 快速导入",
+    uc3Desc: "UHS-II SD 卡槽，插卡自动触发 AI 导入流程。PCIe 4.0 NVMe 7,000 MB/s，4K 素材秒级传输。",
+    uc4Label: "效率极客 / 家庭用户",
+    uc4Title: "桌面极简，能力极强",
+    uc4Desc: "140W GaN 内置电源，一根线消灭所有散线。旗舰版机器人模块会跟着你说话的方向转头——冷冰冰的硬件，有了温度。",
+    specLabel: "技术规格 · Specifications",
+    specTitle1: "硬件规格",
+    specTitle2: "一览。",
+    specSub: "Hardware at a Glance",
+    pricingLabel: "产品配置 · Product SKU",
+    pricingTitle1: "选择你的",
+    pricingTitle2: "ClawPool。",
+    pricingDesc: "所有版本均包含完整 I/O 扩展坞、140W GaN 供电和 OpenClaw AI 语音控制。按需选择存储容量和 AI 模块形态。",
+    skuStd: "标准版",
+    skuAdv: "进阶版",
+    skuFlg: "旗舰版",
+    skuPop: "最受欢迎",
+    skuFlgTag: "旗舰",
+    skuCta: "Kickstarter 早鸟支持",
+    ctaTitle1: "你的 AI 助手",
+    ctaTitle2: "安全的家。",
+    ctaSub: "The Secure Habitat for Your AI Agent.",
+    ctaDesc: "ClawPool 即将登陆 Kickstarter。成为早期支持者，以最优惠的价格获得这台将 Mac Mini 变为真正 AI 工作站的设备。",
+    backCta: "支持众筹 — Back on Kickstarter →",
+    compatLabel: "兼容性 · Compatibility",
+    recommended: "推荐",
+    emotionLabel: "8 种情感状态：",
+  },
+  en: {
+    nav: ["Features", "Specs", "Use Cases", "Pricing"],
+    navEn: ["功能", "规格", "使用场景", "定价"],
+    cta: "Back on Kickstarter →",
+    badge: "The First OpenClaw Hardware · Coming to Kickstarter",
+    heroTitle1: "The First",
+    heroTitle2: "OpenClaw",
+    heroTitle3: "Hardware.",
+    heroSub: "AN OPENCLAW AI-DOCK — 第一款 OpenClaw 硬件",
+    heroDesc: "ClawPool is the world's first dock with built-in OpenClaw AI, designed for Mac Mini. It unifies voice AI, secure storage, and full I/O expansion — evolving your Mac Mini into a true AI workstation.",
+    heroDescEn: "全球首款内置 OpenClaw AI 的扩展坞。安全存储、全接口扩展、语音控制——融为一体。",
+    learnMore: "Explore Features",
+    stat1: ["4TB", "Max Storage", "最大存储"],
+    stat2: ["9+", "I/O Ports", "I/O 接口"],
+    stat3: ["140W", "GaN Power", "GaN 供电"],
+    stat4: ["3m", "Voice Range", "拾音距离"],
+    whyTitle1: "Three Capabilities,",
+    whyTitle2: "One Enclosure.",
+    whySub: "三大能力，一个底座。",
+    whyDesc: "Mac Mini is the world's most powerful compact computer. ClawPool transforms it into a true AI workstation — secure AI-dedicated storage, a full-port hub that eliminates cable clutter, and a voice AI assistant that understands you.",
+    p1Title: "OpenClaw Voice AI",
+    p1TitleEn: "OpenClaw 语音 AI",
+    p1Desc: "Say \"Hey Claw\" to wake your Mac Mini. Use natural language to launch apps, manage files, and automate workflows. All NLP inference runs locally — your voice data never leaves your desk.",
+    p1Spec: "Wake latency < 300ms · 6-mic ring array · 3m pickup · Local NLP",
+    p2Title: "Full I/O Hub",
+    p2TitleEn: "全接口扩展坞",
+    p2Desc: "2× Thunderbolt 4, 2× HDMI 2.1 4K@120Hz, 2.5GbE, 4× USB-A 3.2, DisplayPort 1.4, UHS-II SD slot — one cable to Mac Mini, 140W GaN powers everything.",
+    p2Spec: "TB4 40Gbps · HDMI 2.1 · 140W GaN · 2.5GbE · SD UHS-II",
+    p3Title: "Secure AI Storage",
+    p3TitleEn: "AI 安全专属存储",
+    p3Desc: "PCIe 4.0 NVMe (up to 4TB), AES-256 hardware encryption. AI access is strictly sandboxed to this SSD — it cannot touch your Mac system files. Physical isolation, truly secure.",
+    p3Spec: "PCIe 4.0 · 7,000 MB/s · AES-256 · Up to 4TB · Physical isolation",
+    secLabel: "Security · 核心安全机制",
+    secTitle1: "AI Can Only Access",
+    secTitle2: "Its Own Space.",
+    secDesc: "ClawPool uses a \"physical isolation + permission convergence\" security architecture. All OpenClaw AI operations are strictly limited to the built-in NVMe SSD (AI HUB Library) — it cannot access your macOS system directory, personal documents, or desktop.",
+    secDescEn: "物理隔离 + 权限收敛。AI 的所有操作被严格限制在专属 NVMe SSD 内，无法访问你的 Mac 系统文件。",
+    secF1: "AI can only read/write the AI HUB Library — system files are off-limits",
+    secF2: "AES-256 hardware encryption with keys stored in a dedicated security chip",
+    secF3: "SD card insertion auto-triggers sandboxed import flow",
+    secF4: "All NLP inference runs locally — no data uploaded to the cloud",
+    voiceLabel: "Voice Control · 语音 AI",
+    voiceTitle1: "Magnetic Knob,",
+    voiceTitle2: "Use Anywhere.",
+    voiceDesc: "The AI module is a completely standalone WiFi device — after detaching from the dock, it continues communicating with your Mac via LAN. Place it on your desk, nightstand, or living room — it wakes your Mac and executes commands. Dock to charge automatically, no extra cables needed.",
+    voiceDescEn: "AI 情感模块是独立 WiFi 设备，可在家中任意位置使用，归位自动充电。",
+    ioLabel: "I/O Hub · 接口扩展",
+    ioTitle1: "One Cable,",
+    ioTitle2: "Everything Connected.",
+    ioDesc: "Built-in 140W GaN power supply. One Thunderbolt 4 cable simultaneously powers and connects your Mac Mini — zero cable clutter on your desk.",
+    usecaseLabel: "Use Cases · 使用场景",
+    usecaseTitle1: "Built for Every",
+    usecaseTitle2: "Creator.",
+    usecaseSub: "为每一位创作者而生。",
+    uc1Label: "Developer / Engineer",
+    uc1Title: "Voice-Driven Dev Workflow",
+    uc1Desc: "Start services, switch branches, run tests — all by voice. Dual HDMI 2.1 for multi-monitor setups. Focus mode triggered with a single phrase.",
+    uc2Label: "Designer / Creative",
+    uc2Title: "AI Partner for Your Studio",
+    uc2Desc: "Connect Wacom tablets, cameras, and color tools. Voice commands switch workflows, AI auto-organizes assets into your dedicated storage library.",
+    uc3Label: "Video Editor / Photographer",
+    uc3Title: "Fast Storage + Quick Import",
+    uc3Desc: "UHS-II SD slot auto-triggers AI import on card insertion. PCIe 4.0 NVMe at 7,000 MB/s — 4K footage transfers in seconds.",
+    uc4Label: "Power User / Home User",
+    uc4Title: "Minimal Desk, Maximum Power",
+    uc4Desc: "Built-in 140W GaN eliminates all cable clutter. The Robot Edition module tracks your voice direction — cold hardware, warm personality.",
+    specLabel: "Specifications · 技术规格",
+    specTitle1: "Hardware",
+    specTitle2: "at a Glance.",
+    specSub: "硬件规格一览",
+    pricingLabel: "Product SKU · 产品配置",
+    pricingTitle1: "Choose Your",
+    pricingTitle2: "ClawPool.",
+    pricingDesc: "All editions include the full I/O hub, 140W GaN power, and OpenClaw AI voice control. Choose your storage capacity and AI module style.",
+    skuStd: "Standard",
+    skuAdv: "Advanced",
+    skuFlg: "Flagship",
+    skuPop: "Most Popular",
+    skuFlgTag: "Flagship",
+    skuCta: "Back on Kickstarter",
+    ctaTitle1: "Your AI Agent's",
+    ctaTitle2: "Secure Home.",
+    ctaSub: "你的 AI 助手，安全的家。",
+    ctaDesc: "ClawPool is coming to Kickstarter. Be an early backer and get the best price on the device that transforms Mac Mini into a true AI workstation.",
+    backCta: "Back on Kickstarter — 支持众筹 →",
+    compatLabel: "Compatibility · 兼容性",
+    recommended: "Recommended",
+    emotionLabel: "8 Emotion States: ",
+  },
+};
 
 export default function Home() {
+  const [lang, setLang] = useState<"zh" | "en">("zh");
   const [menuOpen, setMenuOpen] = useState(false);
-  const statsRef = useInView(0.3);
+  const t = T[lang];
 
   const navLinks = [
-    { href: "#features", label: "功能", en: "Features" },
-    { href: "#specs", label: "规格", en: "Specs" },
-    { href: "#usecases", label: "使用场景", en: "Use Cases" },
-    { href: "#pricing", label: "定价", en: "Pricing" },
+    { href: "#features", label: t.nav[0] },
+    { href: "#specs", label: t.nav[1] },
+    { href: "#usecases", label: t.nav[2] },
+    { href: "#pricing", label: t.nav[3] },
   ];
 
   return (
     <div className="min-h-screen bg-[#0D1B2A] text-white overflow-x-hidden">
 
       {/* ─── NAVBAR ─── */}
-      <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 md:px-10 h-20 bg-[#0D1B2A]/90 backdrop-blur-md border-b border-white/5">
-        {/* Logo — enlarged */}
+      <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 md:px-10 h-20 bg-[#0a1218]/95 backdrop-blur-md border-b border-white/10">
+        {/* Logo — large */}
         <a href="#" className="flex items-center shrink-0">
-          <img src={IMGS.logoLight} alt="ClawPool" className="h-10 md:h-14 w-auto object-contain" />
+          <img
+            src={IMGS.logoLight}
+            alt="ClawPool"
+            className="h-10 md:h-12 w-auto object-contain"
+            style={{ filter: "drop-shadow(0 0 8px rgba(232,52,26,0.3))" }}
+          />
         </a>
 
         {/* Desktop nav */}
         <div className="hidden md:flex items-center gap-8">
           {navLinks.map(l => (
             <a key={l.href} href={l.href}
-              className="text-sm font-medium text-white/60 hover:text-white transition-colors tracking-wide">
+              className="text-sm font-medium text-white/70 hover:text-white transition-colors tracking-wide">
               {l.label}
             </a>
           ))}
         </div>
 
-        {/* CTA */}
+        {/* Right: lang toggle + CTA */}
         <div className="hidden md:flex items-center gap-3">
+          {/* Language toggle */}
+          <button
+            onClick={() => setLang(lang === "zh" ? "en" : "zh")}
+            className="flex items-center gap-1.5 px-3 py-1.5 border border-white/20 rounded-sm text-xs font-mono text-white/50 hover:text-white hover:border-white/40 transition-all"
+          >
+            <span className={lang === "zh" ? "text-white" : "text-white/40"}>中</span>
+            <span className="text-white/20">/</span>
+            <span className={lang === "en" ? "text-white" : "text-white/40"}>EN</span>
+          </button>
           <a href="https://kickstarter.com" target="_blank" rel="noopener noreferrer"
             className="px-5 py-2 bg-[#E8341A] text-white text-sm font-semibold rounded-sm hover:bg-[#c42a14] transition-colors tracking-wide">
-            支持众筹 →
+            {t.cta}
           </a>
         </div>
 
         {/* Mobile hamburger */}
-        <button className="md:hidden text-white/70" onClick={() => setMenuOpen(!menuOpen)}>
-          <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2">
-            {menuOpen
-              ? <><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></>
-              : <><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></>
-            }
-          </svg>
-        </button>
+        <div className="md:hidden flex items-center gap-3">
+          <button
+            onClick={() => setLang(lang === "zh" ? "en" : "zh")}
+            className="px-2 py-1 border border-white/20 rounded text-xs font-mono text-white/60"
+          >
+            {lang === "zh" ? "EN" : "中"}
+          </button>
+          <button className="text-white/70" onClick={() => setMenuOpen(!menuOpen)}>
+            <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2">
+              {menuOpen
+                ? <><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></>
+                : <><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></>
+              }
+            </svg>
+          </button>
+        </div>
 
         {/* Mobile menu */}
         {menuOpen && (
-          <div className="absolute top-20 left-0 right-0 bg-[#0D1B2A] border-b border-white/10 px-6 py-4 flex flex-col gap-4 md:hidden">
+          <div className="absolute top-20 left-0 right-0 bg-[#0a1218]/98 border-b border-white/10 px-6 py-4 flex flex-col gap-4 md:hidden">
             {navLinks.map(l => (
               <a key={l.href} href={l.href} onClick={() => setMenuOpen(false)}
                 className="text-base font-medium text-white/70 hover:text-white transition-colors">
-                {l.label} <span className="text-white/30 text-sm ml-1">{l.en}</span>
+                {l.label}
               </a>
             ))}
             <a href="https://kickstarter.com" target="_blank" rel="noopener noreferrer"
               className="mt-2 px-5 py-3 bg-[#E8341A] text-white text-sm font-semibold rounded-sm text-center">
-              支持众筹 →
+              {t.cta}
             </a>
           </div>
         )}
@@ -122,66 +299,58 @@ export default function Home() {
 
       {/* ─── HERO ─── */}
       <section className="relative min-h-screen flex items-center pt-20 overflow-hidden">
-        {/* Background gradient */}
         <div className="absolute inset-0 bg-gradient-to-br from-[#0D1B2A] via-[#0D1B2A] to-[#0a1520]" />
-        {/* Grid overlay */}
         <div className="absolute inset-0 opacity-[0.04]"
           style={{ backgroundImage: "linear-gradient(#4FC3F7 1px, transparent 1px), linear-gradient(90deg, #4FC3F7 1px, transparent 1px)", backgroundSize: "60px 60px" }} />
 
         <div className="relative z-10 w-full max-w-[1400px] mx-auto px-6 md:px-12 lg:px-16">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-0 items-center min-h-[calc(100vh-4rem)]">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-0 items-center min-h-[calc(100vh-5rem)]">
 
             {/* Left — copy */}
             <div className="flex flex-col justify-center py-16 lg:py-0 lg:pr-12">
-              {/* Badge */}
-              <div className="inline-flex items-center gap-2 mb-6 self-start">
-                <span className="w-2 h-2 rounded-full bg-[#E8341A] animate-pulse" />
-                <span className="text-xs font-mono text-[#4FC3F7] tracking-[0.2em] uppercase">即将登陆 Kickstarter</span>
+              {/* Badge — First OpenClaw Hardware */}
+              <div className="inline-flex items-center gap-2 mb-5 self-start bg-[#E8341A]/10 border border-[#E8341A]/30 px-4 py-2 rounded-sm">
+                <span className="w-2 h-2 rounded-full bg-[#E8341A] animate-pulse shrink-0" />
+                <span className="text-xs font-mono text-[#E8341A] tracking-[0.15em] uppercase">{t.badge}</span>
               </div>
 
               {/* Headline */}
-              <h1 className="font-display text-[clamp(3rem,7vw,5.5rem)] font-black leading-[0.92] tracking-tight mb-6">
-                <span className="block text-white">你的 AI</span>
-                <span className="block text-white">助手，</span>
-                <span className="block text-[#E8341A]">真正安全。</span>
+              <h1 className="font-display text-[clamp(3.2rem,7.5vw,6rem)] font-black leading-[0.9] tracking-tight mb-5">
+                <span className="block text-white">{t.heroTitle1}</span>
+                <span className="block text-[#E8341A]">{t.heroTitle2}</span>
+                <span className="block text-white">{t.heroTitle3}</span>
               </h1>
-              <p className="text-sm font-mono text-[#4FC3F7] tracking-[0.15em] uppercase mb-6">
-                Your AI Agent. Secured. — AN OPENCLAW AI-DOCK
+              <p className="text-sm font-mono text-[#4FC3F7] tracking-[0.12em] uppercase mb-5">
+                {t.heroSub}
               </p>
 
               {/* Description */}
-              <p className="text-base md:text-lg text-white/60 leading-relaxed max-w-lg mb-3">
-                ClawPool 是专为 Mac Mini 设计的 AI 底座。它将 AI 的访问权限严格限制在内置 SSD 内，无法触碰你的系统文件——让 AI 真正强大，同时真正安全。
+              <p className="text-base md:text-lg text-white/70 leading-relaxed max-w-lg mb-3">
+                {t.heroDesc}
               </p>
-              <p className="text-sm text-white/40 leading-relaxed max-w-lg mb-10">
-                Secure AI storage, full I/O expansion, and OpenClaw voice control — all in one precision-crafted enclosure.
+              <p className="text-sm text-white/35 leading-relaxed max-w-lg mb-10">
+                {t.heroDescEn}
               </p>
 
               {/* CTAs */}
               <div className="flex flex-wrap gap-4 mb-14">
                 <a href="https://kickstarter.com" target="_blank" rel="noopener noreferrer"
                   className="group flex items-center gap-2 px-7 py-3.5 bg-[#E8341A] text-white font-semibold text-sm rounded-sm hover:bg-[#c42a14] transition-all">
-                  <span>支持众筹</span>
-                  <span className="group-hover:translate-x-1 transition-transform">→</span>
+                  <span>{t.cta}</span>
                 </a>
                 <a href="#features"
-                  className="px-7 py-3.5 border border-white/20 text-white/70 font-medium text-sm rounded-sm hover:border-white/50 hover:text-white transition-all">
-                  了解功能
+                  className="px-7 py-3.5 border border-white/25 text-white/70 font-medium text-sm rounded-sm hover:border-white/50 hover:text-white transition-all">
+                  {t.learnMore}
                 </a>
               </div>
 
               {/* Stats */}
-              <div ref={statsRef.ref} className="grid grid-cols-4 gap-4 border-t border-white/10 pt-8">
-                {[
-                  { val: "4TB", sub: "最大存储", en: "MAX STORAGE" },
-                  { val: "9+", sub: "I/O 接口", en: "I/O PORTS" },
-                  { val: "140W", sub: "GaN 供电", en: "GAN POWER" },
-                  { val: "3m", sub: "拾音距离", en: "VOICE RANGE" },
-                ].map((s) => (
-                  <div key={s.val} className="flex flex-col">
-                    <span className="font-display font-black text-2xl md:text-3xl text-white">{s.val}</span>
-                    <span className="text-[10px] font-mono text-[#4FC3F7] tracking-widest mt-1">{s.en}</span>
-                    <span className="text-xs text-white/40 mt-0.5">{s.sub}</span>
+              <div className="grid grid-cols-4 gap-4 border-t border-white/10 pt-8">
+                {[t.stat1, t.stat2, t.stat3, t.stat4].map((s) => (
+                  <div key={s[0]} className="flex flex-col">
+                    <span className="font-display font-black text-2xl md:text-3xl text-white">{s[0]}</span>
+                    <span className="text-[10px] font-mono text-[#4FC3F7] tracking-widest mt-1">{s[2]}</span>
+                    <span className="text-xs text-white/40 mt-0.5">{s[1]}</span>
                   </div>
                 ))}
               </div>
@@ -189,28 +358,23 @@ export default function Home() {
 
             {/* Right — product image */}
             <div className="relative flex items-center justify-center lg:justify-end">
-              {/* Glow */}
               <div className="absolute w-[500px] h-[500px] rounded-full bg-[#E8341A]/10 blur-[100px] pointer-events-none" />
               <div className="absolute w-[300px] h-[300px] rounded-full bg-[#4FC3F7]/8 blur-[80px] pointer-events-none translate-x-20" />
-
-              {/* Main product image */}
               <div className="relative z-10 w-full max-w-[560px]">
                 <img src={IMGS.hero} alt="ClawPool AI Dock"
                   className="w-full h-auto object-contain drop-shadow-2xl"
                   style={{ filter: "drop-shadow(0 40px 80px rgba(232,52,26,0.25))" }} />
-
-                {/* Floating badges */}
-                <div className="absolute top-[15%] left-0 md:-left-8 bg-[#0D1B2A]/90 border border-[#E8341A]/40 backdrop-blur-sm px-3 py-2 rounded text-xs font-mono">
+                <div className="absolute top-[15%] left-0 md:-left-8 bg-[#0a1218]/95 border border-[#E8341A]/40 backdrop-blur-sm px-3 py-2 rounded text-xs font-mono">
                   <div className="text-[#E8341A] font-bold">HEY CLAW</div>
-                  <div className="text-white/50">语音已激活</div>
+                  <div className="text-white/50">{lang === "zh" ? "语音已激活" : "Voice Activated"}</div>
                 </div>
-                <div className="absolute bottom-[20%] right-0 md:-right-4 bg-[#0D1B2A]/90 border border-[#4FC3F7]/40 backdrop-blur-sm px-3 py-2 rounded text-xs font-mono">
+                <div className="absolute bottom-[20%] right-0 md:-right-4 bg-[#0a1218]/95 border border-[#4FC3F7]/40 backdrop-blur-sm px-3 py-2 rounded text-xs font-mono">
                   <div className="text-[#4FC3F7] font-bold">PCIe 4.0 NVMe</div>
-                  <div className="text-white/50">7,000 MB/s 读取</div>
+                  <div className="text-white/50">7,000 MB/s {lang === "zh" ? "读取" : "Read"}</div>
                 </div>
-                <div className="absolute top-[45%] right-0 md:-right-6 bg-[#0D1B2A]/90 border border-white/20 backdrop-blur-sm px-3 py-2 rounded text-xs font-mono">
-                  <div className="text-white font-bold">AI 安全边界</div>
-                  <div className="text-white/50">物理隔离保护</div>
+                <div className="absolute top-[45%] right-0 md:-right-6 bg-[#0a1218]/95 border border-white/20 backdrop-blur-sm px-3 py-2 rounded text-xs font-mono">
+                  <div className="text-white font-bold">{lang === "zh" ? "AI 安全边界" : "AI Sandbox"}</div>
+                  <div className="text-white/50">{lang === "zh" ? "物理隔离保护" : "Physical isolation"}</div>
                 </div>
               </div>
             </div>
@@ -224,62 +388,30 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ─── PROBLEM / SOLUTION ─── */}
+      {/* ─── THREE PILLARS ─── */}
       <section className="py-24 md:py-32 bg-[#0a1520]">
         <div className="max-w-[1400px] mx-auto px-6 md:px-12 lg:px-16">
-          {/* Section header */}
           <div className="mb-16 max-w-3xl">
-            <p className="text-xs font-mono text-[#4FC3F7] tracking-[0.2em] uppercase mb-4">为什么是 ClawPool</p>
-            <h2 className="font-display text-4xl md:text-5xl font-black leading-tight mb-6">
-              三大能力，<br />
-              <span className="text-[#E8341A]">一个底座。</span>
+            <p className="text-xs font-mono text-[#4FC3F7] tracking-[0.2em] uppercase mb-4">
+              {lang === "zh" ? "为什么是 ClawPool" : "Why ClawPool"}
+            </p>
+            <h2 className="font-display text-4xl md:text-5xl font-black leading-tight mb-3">
+              {t.whyTitle1}<br />
+              <span className="text-[#E8341A]">{t.whyTitle2}</span>
             </h2>
-            <p className="text-white/50 text-lg leading-relaxed">
-              Three Capabilities. One Enclosure.
-            </p>
-            <p className="text-white/40 text-base leading-relaxed mt-3 max-w-2xl">
-              Mac Mini 是世界上性能最强的紧凑型电脑。ClawPool 让它成为真正的 AI 工作站——安全的 AI 专属存储、消除桌面杂乱的全接口扩展坞，以及懂你的语音 AI 助手。
-            </p>
+            <p className="text-white/40 text-lg mb-4">{t.whySub}</p>
+            <p className="text-white/50 text-base leading-relaxed max-w-2xl">{t.whyDesc}</p>
           </div>
 
-          {/* Three pillars */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {[
-              {
-                num: "01",
-                icon: "🎙",
-                title: "OpenClaw 语音 AI",
-                titleEn: "OpenClaw Voice AI",
-                desc: "说「Hey Claw」唤醒你的 Mac Mini，用自然语言启动应用、管理文件、自动化工作流。所有 NLP 推理在本地完成——你的声音数据永远不会离开桌面。",
-                descEn: "Wake latency < 300ms · 6-mic ring array · 3m pickup · Local NLP",
-                color: "#E8341A",
-              },
-              {
-                num: "02",
-                icon: "⚡",
-                title: "全接口扩展坞",
-                titleEn: "Full I/O Hub",
-                desc: "2× Thunderbolt 4、2× HDMI 2.1 4K@120Hz、2.5GbE 网口、4× USB-A 3.2、DisplayPort 1.4、UHS-II SD 卡槽——一根线连接 Mac Mini，140W GaN 同时供电。",
-                descEn: "TB4 40Gbps · HDMI 2.1 · 140W GaN · 2.5GbE · SD UHS-II",
-                color: "#4FC3F7",
-              },
-              {
-                num: "03",
-                icon: "🔒",
-                title: "AI 安全专属存储",
-                titleEn: "Secure AI Storage",
-                desc: "PCIe 4.0 NVMe（最高 4TB），AES-256 硬件加密。AI 的访问权限被严格限制在这块 SSD 内——无法访问你的 Mac 系统文件，物理隔离，真正安全。",
-                descEn: "PCIe 4.0 · 7,000 MB/s · AES-256 · Up to 4TB · Physical isolation",
-                color: "#E8341A",
-              },
+              { num: "01", icon: "🎙", title: t.p1Title, titleEn: t.p1TitleEn, desc: t.p1Desc, spec: t.p1Spec, color: "#E8341A" },
+              { num: "02", icon: "⚡", title: t.p2Title, titleEn: t.p2TitleEn, desc: t.p2Desc, spec: t.p2Spec, color: "#4FC3F7" },
+              { num: "03", icon: "🔒", title: t.p3Title, titleEn: t.p3TitleEn, desc: t.p3Desc, spec: t.p3Spec, color: "#E8341A" },
             ].map((p) => (
               <div key={p.num}
                 className="group relative bg-[#0D1B2A] border border-white/8 hover:border-white/20 rounded-sm p-8 transition-all duration-300 overflow-hidden">
-                {/* Background accent */}
                 <div className="absolute top-0 left-0 w-1 h-full" style={{ backgroundColor: p.color }} />
-                <div className="absolute -top-10 -right-10 w-40 h-40 rounded-full opacity-0 group-hover:opacity-5 transition-opacity"
-                  style={{ backgroundColor: p.color, filter: "blur(40px)" }} />
-
                 <div className="relative z-10">
                   <div className="flex items-start justify-between mb-6">
                     <span className="font-mono text-4xl font-bold opacity-20">{p.num}</span>
@@ -288,7 +420,7 @@ export default function Home() {
                   <h3 className="font-display text-xl font-bold text-white mb-1">{p.title}</h3>
                   <p className="text-xs font-mono text-white/30 mb-4">{p.titleEn}</p>
                   <p className="text-sm text-white/60 leading-relaxed mb-4">{p.desc}</p>
-                  <p className="text-xs font-mono text-white/30 leading-relaxed">{p.descEn}</p>
+                  <p className="text-xs font-mono text-white/30 leading-relaxed">{p.spec}</p>
                 </div>
               </div>
             ))}
@@ -299,42 +431,33 @@ export default function Home() {
       {/* ─── FEATURE 1: SECURITY (full-bleed split) ─── */}
       <section id="features" className="relative overflow-hidden">
         <div className="grid grid-cols-1 lg:grid-cols-2 min-h-[680px]">
-          {/* Image side */}
           <div className="relative h-[400px] lg:h-auto overflow-hidden">
             <img src={IMGS.verticalShowcase} alt="ClawPool Vertical Showcase"
               className="w-full h-full object-cover object-center" />
             <div className="absolute inset-0 bg-gradient-to-r from-transparent to-[#0D1B2A] hidden lg:block" />
             <div className="absolute inset-0 bg-gradient-to-t from-[#0D1B2A] to-transparent lg:hidden" />
           </div>
-
-          {/* Content side */}
           <div className="bg-[#0D1B2A] flex items-center px-8 md:px-12 lg:px-16 py-16 lg:py-24">
             <div className="max-w-xl">
-              <p className="text-xs font-mono text-[#E8341A] tracking-[0.2em] uppercase mb-4">核心安全机制 · Security</p>
+              <p className="text-xs font-mono text-[#E8341A] tracking-[0.2em] uppercase mb-4">{t.secLabel}</p>
               <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-black leading-tight mb-6">
-                AI 只能访问<br />
-                <span className="text-[#E8341A]">它自己的空间。</span>
+                {t.secTitle1}<br />
+                <span className="text-[#E8341A]">{t.secTitle2}</span>
               </h2>
-              <p className="text-white/60 text-base leading-relaxed mb-4">
-                ClawPool 采用「物理隔离 + 权限收敛」的安全架构。OpenClaw AI 的所有操作权限被严格限制在内置 NVMe SSD（AI HUB 资料库）内——它无法访问你的 macOS 系统目录、个人文档或桌面。
-              </p>
-              <p className="text-white/40 text-sm leading-relaxed mb-8">
-                Physical isolation + permission convergence. AI operations are strictly sandboxed to the dedicated NVMe SSD. Your Mac system files are physically inaccessible to AI agents.
-              </p>
-
-              {/* Security features list */}
+              <p className="text-white/60 text-base leading-relaxed mb-3">{t.secDesc}</p>
+              <p className="text-white/35 text-sm leading-relaxed mb-8">{t.secDescEn}</p>
               <div className="space-y-4">
                 {[
-                  { icon: "🛡", text: "AI 只能读写 AI HUB 资料库，无法触碰系统文件", en: "AI-only storage sandbox" },
-                  { icon: "🔑", text: "AES-256 硬件加密，密钥存储于独立安全芯片", en: "AES-256 hardware encryption" },
-                  { icon: "📥", text: "插入 SD 卡自动触发导入流程，文件先进沙箱再处理", en: "Auto-sandboxed file import" },
-                  { icon: "🏠", text: "所有 NLP 推理本地完成，数据不上传云端", en: "100% local NLP inference" },
+                  { icon: "🛡", text: t.secF1, en: "AI-only storage sandbox" },
+                  { icon: "🔑", text: t.secF2, en: "AES-256 hardware encryption" },
+                  { icon: "📥", text: t.secF3, en: "Auto-sandboxed file import" },
+                  { icon: "🏠", text: t.secF4, en: "100% local NLP inference" },
                 ].map((f) => (
                   <div key={f.en} className="flex items-start gap-3">
                     <span className="text-lg mt-0.5 shrink-0">{f.icon}</span>
                     <div>
                       <p className="text-sm text-white/70">{f.text}</p>
-                      <p className="text-xs font-mono text-white/30">{f.en}</p>
+                      <p className="text-xs font-mono text-white/25">{f.en}</p>
                     </div>
                   </div>
                 ))}
@@ -347,48 +470,37 @@ export default function Home() {
       {/* ─── FEATURE 2: VOICE AI (reversed split) ─── */}
       <section className="relative overflow-hidden bg-[#060e18]">
         <div className="grid grid-cols-1 lg:grid-cols-2 min-h-[680px]">
-          {/* Content side */}
           <div className="flex items-center px-8 md:px-12 lg:px-16 py-16 lg:py-24 order-2 lg:order-1">
             <div className="max-w-xl">
-              <p className="text-xs font-mono text-[#4FC3F7] tracking-[0.2em] uppercase mb-4">语音 AI · Voice Control</p>
+              <p className="text-xs font-mono text-[#4FC3F7] tracking-[0.2em] uppercase mb-4">{t.voiceLabel}</p>
               <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-black leading-tight mb-6">
-                磁吸旋钮，<br />
-                <span className="text-[#4FC3F7]">随处可用。</span>
+                {t.voiceTitle1}<br />
+                <span className="text-[#4FC3F7]">{t.voiceTitle2}</span>
               </h2>
-              <p className="text-white/60 text-base leading-relaxed mb-4">
-                AI 情感模块是一个完全独立的 WiFi 设备——从底座取下后，它通过局域网继续与你的 Mac 通信。放在书桌上、床头柜上，或者客厅里，都能唤醒你的 Mac，执行指令。归位底座自动充电，无需额外线缆。
-              </p>
-              <p className="text-white/40 text-sm leading-relaxed mb-8">
-                The AI module is a standalone WiFi device. Detach it anywhere in your home — it keeps communicating with your Mac via LAN. Dock to charge automatically.
-              </p>
-
-              {/* Voice specs */}
+              <p className="text-white/60 text-base leading-relaxed mb-3">{t.voiceDesc}</p>
+              <p className="text-white/35 text-sm leading-relaxed mb-8">{t.voiceDescEn}</p>
               <div className="grid grid-cols-2 gap-4 mb-8">
                 {[
-                  { val: "< 300ms", label: "唤醒延迟", en: "Wake latency" },
-                  { val: "6 麦", label: "环形阵列", en: "Mic ring array" },
-                  { val: "3 米", label: "拾音距离", en: "Pickup range" },
-                  { val: "6–8h", label: "独立续航", en: "Battery life" },
+                  { val: "< 300ms", label: lang === "zh" ? "唤醒延迟" : "Wake latency", sub: lang === "zh" ? "Wake latency" : "唤醒延迟" },
+                  { val: lang === "zh" ? "6 麦" : "6 Mics", label: lang === "zh" ? "环形阵列" : "Ring array", sub: lang === "zh" ? "Mic ring array" : "麦克风阵列" },
+                  { val: lang === "zh" ? "3 米" : "3m", label: lang === "zh" ? "拾音距离" : "Pickup range", sub: lang === "zh" ? "Pickup range" : "拾音距离" },
+                  { val: "6–8h", label: lang === "zh" ? "独立续航" : "Battery life", sub: lang === "zh" ? "Battery life" : "独立续航" },
                 ].map((s) => (
-                  <div key={s.en} className="bg-white/5 border border-white/8 rounded-sm p-4">
+                  <div key={s.val} className="bg-white/5 border border-white/8 rounded-sm p-4">
                     <div className="font-display font-black text-xl text-white">{s.val}</div>
                     <div className="text-xs text-white/50 mt-1">{s.label}</div>
-                    <div className="text-xs font-mono text-white/25">{s.en}</div>
+                    <div className="text-xs font-mono text-white/25">{s.sub}</div>
                   </div>
                 ))}
               </div>
-
-              {/* Emotion states preview */}
               <div className="flex items-center gap-2 flex-wrap">
-                <span className="text-xs text-white/30 font-mono mr-1">8 种情感状态：</span>
-                {["😴 待机", "👂 聆听", "🤔 思考", "⚡ 执行", "✅ 完成", "😵 出错", "🔔 通知", "🎵 音乐"].map((e) => (
-                  <span key={e} className="text-xs bg-white/5 border border-white/10 px-2 py-1 rounded text-white/50">{e}</span>
+                <span className="text-xs text-white/30 font-mono mr-1">{t.emotionLabel}</span>
+                {["😴", "👂", "🤔", "⚡", "✅", "😵", "🔔", "🎵"].map((e) => (
+                  <span key={e} className="text-base bg-white/5 border border-white/10 px-2 py-1 rounded">{e}</span>
                 ))}
               </div>
             </div>
           </div>
-
-          {/* Image side */}
           <div className="relative h-[400px] lg:h-auto overflow-hidden order-1 lg:order-2">
             <img src={IMGS.sceneBoot} alt="ClawPool Boot Scene"
               className="w-full h-full object-cover object-center" />
@@ -398,40 +510,54 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ─── FEATURE 3: I/O HUB (dark card grid) ─── */}
+      {/* ─── FEATURE 3: I/O HUB — with front-flat product image ─── */}
       <section className="py-24 md:py-32 bg-[#0D1B2A]">
         <div className="max-w-[1400px] mx-auto px-6 md:px-12 lg:px-16">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-            {/* Left: image */}
-            <div className="relative">
-              <div className="absolute inset-0 bg-[#4FC3F7]/5 blur-[60px] rounded-full" />
-              <img src={IMGS.topView} alt="ClawPool Top View"
-                className="relative z-10 w-full max-w-[500px] mx-auto h-auto object-contain rounded-sm"
-                style={{ filter: "drop-shadow(0 20px 60px rgba(79,195,247,0.2))" }} />
+            {/* Left: FRONT FLAT product image */}
+            <div className="relative flex items-center justify-center">
+              <div className="absolute inset-0 bg-[#4FC3F7]/5 blur-[80px] rounded-full" />
+              {/* Dark card background to make the product pop */}
+              <div className="relative z-10 bg-[#060e18] rounded-sm p-8 w-full max-w-[480px] mx-auto border border-white/8">
+                <img
+                  src={IMGS.frontFlat}
+                  alt="ClawPool Front View"
+                  className="w-full h-auto object-contain"
+                  style={{ filter: "drop-shadow(0 20px 50px rgba(79,195,247,0.15))" }}
+                />
+                {/* Port labels overlay */}
+                <div className="mt-4 grid grid-cols-3 gap-2">
+                  {[
+                    { label: "TB4 × 2", color: "#4FC3F7" },
+                    { label: "HDMI 2.1 × 2", color: "#4FC3F7" },
+                    { label: "USB-A × 4", color: "#E8341A" },
+                  ].map(p => (
+                    <div key={p.label} className="text-center py-1.5 border border-white/10 rounded text-xs font-mono" style={{ color: p.color }}>
+                      {p.label}
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
 
             {/* Right: I/O specs */}
             <div>
-              <p className="text-xs font-mono text-[#4FC3F7] tracking-[0.2em] uppercase mb-4">接口扩展 · I/O Hub</p>
+              <p className="text-xs font-mono text-[#4FC3F7] tracking-[0.2em] uppercase mb-4">{t.ioLabel}</p>
               <h2 className="font-display text-3xl md:text-4xl font-black leading-tight mb-6">
-                一根线，<br />
-                <span className="text-[#4FC3F7]">搞定一切。</span>
+                {t.ioTitle1}<br />
+                <span className="text-[#4FC3F7]">{t.ioTitle2}</span>
               </h2>
-              <p className="text-white/50 text-sm leading-relaxed mb-8">
-                One cable. Everything connected. 内置 140W GaN 电源，通过 Thunderbolt 4 同时为 Mac Mini 供电并传输数据，桌面零散线缆。
-              </p>
-
-              {/* Port list */}
+              <p className="text-white/50 text-sm leading-relaxed mb-8">{t.ioDesc}</p>
               <div className="space-y-3">
                 {[
-                  { port: "Thunderbolt 4", spec: "40 Gbps × 2", note: "单线供电 + 数据" },
-                  { port: "HDMI 2.1", spec: "4K@120Hz × 2", note: "双显示器支持" },
-                  { port: "USB-A 3.2 Gen2", spec: "10 Gbps × 4", note: "常用设备连接" },
-                  { port: "USB-C 3.2", spec: "10 Gbps × 2", note: "通用扩展" },
-                  { port: "DisplayPort 1.4", spec: "4K@144Hz × 1", note: "高刷新率显示器" },
-                  { port: "SD 卡槽", spec: "UHS-II 312 MB/s", note: "摄影师必备" },
-                  { port: "RJ45 以太网", spec: "2.5 Gbps", note: "有线网络" },
-                  { port: "3.5mm 音频", spec: "麦克风 + 耳机", note: "二合一接口" },
+                  { port: "Thunderbolt 4", spec: "40 Gbps × 2", note: lang === "zh" ? "单线供电 + 数据" : "Power + Data" },
+                  { port: "HDMI 2.1", spec: "4K@120Hz × 2", note: lang === "zh" ? "双显示器支持" : "Dual monitor" },
+                  { port: "USB-A 3.2 Gen2", spec: "10 Gbps × 4", note: lang === "zh" ? "常用设备连接" : "Peripheral hub" },
+                  { port: "USB-C 3.2", spec: "10 Gbps × 2", note: lang === "zh" ? "通用扩展" : "Universal" },
+                  { port: "DisplayPort 1.4", spec: "4K@144Hz × 1", note: lang === "zh" ? "高刷新率显示器" : "High-refresh display" },
+                  { port: lang === "zh" ? "SD 卡槽" : "SD Card Slot", spec: "UHS-II 312 MB/s", note: lang === "zh" ? "摄影师必备" : "Photographer essential" },
+                  { port: lang === "zh" ? "RJ45 以太网" : "RJ45 Ethernet", spec: "2.5 Gbps", note: lang === "zh" ? "有线网络" : "Wired network" },
+                  { port: lang === "zh" ? "3.5mm 音频" : "3.5mm Audio", spec: lang === "zh" ? "麦克风 + 耳机" : "Mic + Headphone", note: lang === "zh" ? "二合一接口" : "Combo jack" },
                 ].map((p) => (
                   <div key={p.port} className="flex items-center justify-between py-2.5 border-b border-white/5 group hover:border-white/15 transition-colors">
                     <div className="flex items-center gap-3">
@@ -450,87 +576,93 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ─── USE CASES (full-bleed image + overlay cards) ─── */}
+      {/* ─── USE CASES ─── */}
       <section id="usecases" className="relative py-24 md:py-32 overflow-hidden bg-[#060e18]">
         <div className="max-w-[1400px] mx-auto px-6 md:px-12 lg:px-16">
           <div className="mb-16">
-            <p className="text-xs font-mono text-[#E8341A] tracking-[0.2em] uppercase mb-4">使用场景 · Use Cases</p>
+            <p className="text-xs font-mono text-[#E8341A] tracking-[0.2em] uppercase mb-4">{t.usecaseLabel}</p>
             <h2 className="font-display text-4xl md:text-5xl font-black leading-tight">
-              为每一位<br />
-              <span className="text-[#E8341A]">创作者而生。</span>
+              {t.usecaseTitle1}<br />
+              <span className="text-[#E8341A]">{t.usecaseTitle2}</span>
             </h2>
-            <p className="text-white/40 text-lg mt-3">Built for Every Creator.</p>
+            <p className="text-white/40 text-lg mt-3">{t.usecaseSub}</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* Use case 1: Developer */}
+            {/* Use case 1: Developer — workstation scene */}
             <div className="relative rounded-sm overflow-hidden group">
-              <img src={IMGS.coding} alt="Developer use case"
+              <img src={IMGS.workstation} alt="Developer workstation"
                 className="w-full h-[360px] object-cover object-center group-hover:scale-105 transition-transform duration-700" />
               <div className="absolute inset-0 bg-gradient-to-t from-[#0D1B2A] via-[#0D1B2A]/50 to-transparent" />
               <div className="absolute bottom-0 left-0 right-0 p-8">
-                <p className="text-xs font-mono text-[#E8341A] tracking-widest uppercase mb-2">开发者 / 工程师</p>
-                <h3 className="font-display text-2xl font-black text-white mb-2">语音驱动的开发工作流</h3>
-                <p className="text-white/60 text-sm leading-relaxed mb-4">
-                  用语音启动服务、切换分支、运行测试。双 HDMI 2.1 支持多显示器，专注模式一句话触发。
-                </p>
+                <p className="text-xs font-mono text-[#E8341A] tracking-widest uppercase mb-2">{t.uc1Label}</p>
+                <h3 className="font-display text-2xl font-black text-white mb-2">{t.uc1Title}</h3>
+                <p className="text-white/60 text-sm leading-relaxed mb-4">{t.uc1Desc}</p>
                 <div className="flex flex-wrap gap-2">
-                  {["4TB 安全存储", "语音触发构建", "双显示器", "本地 AI 推理"].map(t => (
+                  {(lang === "zh"
+                    ? ["4TB 安全存储", "语音触发构建", "双显示器", "本地 AI 推理"]
+                    : ["4TB Secure Storage", "Voice-triggered builds", "Dual monitors", "Local AI inference"]
+                  ).map(t => (
                     <span key={t} className="text-xs bg-white/10 border border-white/15 px-2.5 py-1 rounded text-white/60">{t}</span>
                   ))}
                 </div>
               </div>
             </div>
 
-            {/* Use case 2: Researcher */}
+            {/* Use case 2: Designer / Creative — studio scene */}
             <div className="relative rounded-sm overflow-hidden group">
-              <img src={IMGS.research} alt="Researcher use case"
+              <img src={IMGS.studioScene} alt="Creative studio"
                 className="w-full h-[360px] object-cover object-center group-hover:scale-105 transition-transform duration-700" />
               <div className="absolute inset-0 bg-gradient-to-t from-[#0D1B2A] via-[#0D1B2A]/50 to-transparent" />
               <div className="absolute bottom-0 left-0 right-0 p-8">
-                <p className="text-xs font-mono text-[#4FC3F7] tracking-widest uppercase mb-2">研究员 / 知识工作者</p>
-                <h3 className="font-display text-2xl font-black text-white mb-2">AI 辅助知识管理</h3>
-                <p className="text-white/60 text-sm leading-relaxed mb-4">
-                  将论文、数据集、笔记安全存入 AI HUB 资料库。用语音讨论框架、口述草稿，不打断思维流。
-                </p>
+                <p className="text-xs font-mono text-[#4FC3F7] tracking-widest uppercase mb-2">{t.uc2Label}</p>
+                <h3 className="font-display text-2xl font-black text-white mb-2">{t.uc2Title}</h3>
+                <p className="text-white/60 text-sm leading-relaxed mb-4">{t.uc2Desc}</p>
                 <div className="flex flex-wrap gap-2">
-                  {["4TB 研究数据库", "语音文献检索", "离线 AI 处理", "可拆卸模块"].map(t => (
+                  {(lang === "zh"
+                    ? ["Wacom 全接口", "语音切换工作流", "素材自动归档", "4TB 创意存储"]
+                    : ["Wacom full I/O", "Voice workflow switch", "Auto asset archiving", "4TB creative storage"]
+                  ).map(t => (
                     <span key={t} className="text-xs bg-white/10 border border-white/15 px-2.5 py-1 rounded text-white/60">{t}</span>
                   ))}
                 </div>
               </div>
             </div>
 
-            {/* Use case 3: Creator */}
+            {/* Use case 3: Photographer — coding image */}
             <div className="relative rounded-sm overflow-hidden group">
-              <img src={IMGS.frontFlat} alt="Creator use case"
+              <img src={IMGS.coding} alt="Photographer use case"
                 className="w-full h-[300px] object-cover object-center group-hover:scale-105 transition-transform duration-700" />
               <div className="absolute inset-0 bg-gradient-to-t from-[#0D1B2A] via-[#0D1B2A]/40 to-transparent" />
               <div className="absolute bottom-0 left-0 right-0 p-8">
-                <p className="text-xs font-mono text-[#E8341A] tracking-widest uppercase mb-2">视频剪辑师 / 摄影师</p>
-                <h3 className="font-display text-2xl font-black text-white mb-2">高速存储 + 快速导入</h3>
-                <p className="text-white/60 text-sm leading-relaxed">
-                  UHS-II SD 卡槽，插卡自动触发 AI 导入流程。PCIe 4.0 NVMe 7,000 MB/s，4K 素材秒级传输。
-                </p>
+                <p className="text-xs font-mono text-[#E8341A] tracking-widest uppercase mb-2">{t.uc3Label}</p>
+                <h3 className="font-display text-2xl font-black text-white mb-2">{t.uc3Title}</h3>
+                <p className="text-white/60 text-sm leading-relaxed">{t.uc3Desc}</p>
               </div>
             </div>
 
             {/* Use case 4: Efficiency */}
             <div className="relative rounded-sm overflow-hidden group bg-[#0D1B2A] border border-white/8 p-8 flex flex-col justify-between">
               <div>
-                <p className="text-xs font-mono text-[#4FC3F7] tracking-widest uppercase mb-4">效率极客 / 家庭用户</p>
-                <h3 className="font-display text-2xl font-black text-white mb-4">桌面极简，能力极强</h3>
-                <p className="text-white/60 text-sm leading-relaxed mb-6">
-                  140W GaN 内置电源，一根线消灭所有散线。旗舰版机器人模块会跟着你说话的方向转头——冷冰冰的硬件，有了温度。
-                </p>
+                <p className="text-xs font-mono text-[#4FC3F7] tracking-widest uppercase mb-4">{t.uc4Label}</p>
+                <h3 className="font-display text-2xl font-black text-white mb-4">{t.uc4Title}</h3>
+                <p className="text-white/60 text-sm leading-relaxed mb-6">{t.uc4Desc}</p>
               </div>
               <div className="grid grid-cols-2 gap-3">
-                {[
-                  { icon: "🤖", text: "声源定位转头（旗舰版）" },
-                  { icon: "🔌", text: "140W GaN 零散线" },
-                  { icon: "📱", text: "配套 App 一键配网" },
-                  { icon: "🔄", text: "OTA 持续功能更新" },
-                ].map(f => (
+                {(lang === "zh"
+                  ? [
+                      { icon: "🤖", text: "声源定位转头（旗舰版）" },
+                      { icon: "🔌", text: "140W GaN 零散线" },
+                      { icon: "📱", text: "配套 App 一键配网" },
+                      { icon: "🔄", text: "OTA 持续功能更新" },
+                    ]
+                  : [
+                      { icon: "🤖", text: "Voice-tracking head (Flagship)" },
+                      { icon: "🔌", text: "140W GaN, zero cable clutter" },
+                      { icon: "📱", text: "Companion App setup in 2 min" },
+                      { icon: "🔄", text: "OTA continuous updates" },
+                    ]
+                ).map(f => (
                   <div key={f.text} className="flex items-start gap-2">
                     <span className="text-base shrink-0">{f.icon}</span>
                     <span className="text-xs text-white/50 leading-relaxed">{f.text}</span>
@@ -546,66 +678,66 @@ export default function Home() {
       <section id="specs" className="py-24 md:py-32 bg-[#0D1B2A]">
         <div className="max-w-[1400px] mx-auto px-6 md:px-12 lg:px-16">
           <div className="mb-16">
-            <p className="text-xs font-mono text-[#4FC3F7] tracking-[0.2em] uppercase mb-4">技术规格 · Specifications</p>
+            <p className="text-xs font-mono text-[#4FC3F7] tracking-[0.2em] uppercase mb-4">{t.specLabel}</p>
             <h2 className="font-display text-4xl md:text-5xl font-black leading-tight">
-              硬件规格<br />
-              <span className="text-[#4FC3F7]">一览。</span>
+              {t.specTitle1}<br />
+              <span className="text-[#4FC3F7]">{t.specTitle2}</span>
             </h2>
-            <p className="text-white/40 text-lg mt-3">Hardware at a Glance</p>
+            <p className="text-white/40 text-lg mt-3">{t.specSub}</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
               {
-                title: "AI 情感模块",
-                titleEn: "AI Module",
+                title: lang === "zh" ? "AI 情感模块" : "AI Module",
+                titleEn: lang === "zh" ? "AI Module" : "AI 情感模块",
                 color: "#E8341A",
                 specs: [
-                  ["主控芯片", "ESP32-S3 双核 240MHz"],
-                  ["屏幕", "2.4\" 圆形 OLED 480×480"],
-                  ["麦克风", "6 麦环形阵列 3m 拾音"],
-                  ["电池", "400mAh Li-Po 6–8h"],
-                  ["无线", "WiFi 2.4GHz 独立设备"],
-                  ["磁吸力", "≥ 12N 钕磁铁阵列"],
+                  [lang === "zh" ? "主控芯片" : "MCU", "ESP32-S3 240MHz"],
+                  [lang === "zh" ? "屏幕" : "Display", "2.4\" OLED 480×480"],
+                  [lang === "zh" ? "麦克风" : "Microphone", lang === "zh" ? "6 麦阵列 3m" : "6-mic array 3m"],
+                  [lang === "zh" ? "电池" : "Battery", "400mAh 6–8h"],
+                  [lang === "zh" ? "无线" : "Wireless", "WiFi 2.4GHz"],
+                  [lang === "zh" ? "磁吸力" : "Magnetic", "≥ 12N"],
                 ],
               },
               {
-                title: "存储",
-                titleEn: "Storage",
+                title: lang === "zh" ? "存储" : "Storage",
+                titleEn: lang === "zh" ? "Storage" : "存储",
                 color: "#4FC3F7",
                 specs: [
-                  ["接口", "M.2 2280 NVMe PCIe 4.0"],
-                  ["读取速度", "≥ 7,000 MB/s"],
-                  ["写入速度", "≥ 5,000 MB/s"],
-                  ["加密", "AES-256 硬件加密"],
-                  ["容量", "1TB / 2TB / 4TB"],
-                  ["文件系统", "APFS / exFAT"],
+                  [lang === "zh" ? "接口" : "Interface", "M.2 NVMe PCIe 4.0"],
+                  [lang === "zh" ? "读取" : "Read", "≥ 7,000 MB/s"],
+                  [lang === "zh" ? "写入" : "Write", "≥ 5,000 MB/s"],
+                  [lang === "zh" ? "加密" : "Encryption", "AES-256"],
+                  [lang === "zh" ? "容量" : "Capacity", "1 / 2 / 4 TB"],
+                  [lang === "zh" ? "文件系统" : "Filesystem", "APFS / exFAT"],
                 ],
               },
               {
-                title: "接口",
-                titleEn: "Connectivity",
+                title: lang === "zh" ? "接口" : "Connectivity",
+                titleEn: lang === "zh" ? "Connectivity" : "接口",
                 color: "#E8341A",
                 specs: [
                   ["Thunderbolt 4", "40Gbps × 2"],
                   ["USB-A 3.2 Gen2", "10Gbps × 4"],
                   ["HDMI 2.1", "4K@120Hz × 2"],
                   ["DisplayPort 1.4", "4K@144Hz × 1"],
-                  ["以太网", "2.5GbE RJ45"],
-                  ["SD 卡槽", "UHS-II 312MB/s"],
+                  [lang === "zh" ? "以太网" : "Ethernet", "2.5GbE"],
+                  ["SD", "UHS-II 312MB/s"],
                 ],
               },
               {
-                title: "供电与散热",
-                titleEn: "Power & Thermal",
+                title: lang === "zh" ? "供电与散热" : "Power & Thermal",
+                titleEn: lang === "zh" ? "Power & Thermal" : "供电与散热",
                 color: "#4FC3F7",
                 specs: [
-                  ["电源", "140W GaN 内置"],
-                  ["散热", "单涡轮风扇主动散热"],
-                  ["噪音", "< 25dB @1m"],
-                  ["工作温度", "0°C ~ 40°C"],
-                  ["兼容性", "Mac Mini M2/M4/M4 Pro"],
-                  ["磁吸充电", "Pogo Pin 4 触点"],
+                  [lang === "zh" ? "电源" : "Power", "140W GaN"],
+                  [lang === "zh" ? "散热" : "Cooling", lang === "zh" ? "单涡轮风扇" : "Single turbine fan"],
+                  [lang === "zh" ? "噪音" : "Noise", "< 25dB @1m"],
+                  [lang === "zh" ? "工作温度" : "Temp", "0°C ~ 40°C"],
+                  [lang === "zh" ? "兼容性" : "Compatible", "Mac Mini M2/M4"],
+                  [lang === "zh" ? "磁吸充电" : "Charging", "Pogo Pin 4-pin"],
                 ],
               },
             ].map((group) => (
@@ -628,18 +760,18 @@ export default function Home() {
 
           {/* Compatibility */}
           <div className="mt-10 p-6 bg-[#060e18] border border-white/8 rounded-sm">
-            <p className="text-xs font-mono text-white/40 uppercase tracking-widest mb-4">兼容性 · Compatibility</p>
+            <p className="text-xs font-mono text-white/40 uppercase tracking-widest mb-4">{t.compatLabel}</p>
             <div className="flex flex-wrap gap-3">
               {[
-                { model: "Mac Mini M4 (2024)", status: "完整支持", recommended: true },
-                { model: "Mac Mini M4 Pro (2024)", status: "完整支持", recommended: true },
-                { model: "Mac Mini M2 (2023)", status: "完整支持", recommended: false },
-                { model: "Mac Mini M2 Pro (2023)", status: "完整支持", recommended: false },
+                { model: "Mac Mini M4 (2024)", recommended: true },
+                { model: "Mac Mini M4 Pro (2024)", recommended: true },
+                { model: "Mac Mini M2 (2023)", recommended: false },
+                { model: "Mac Mini M2 Pro (2023)", recommended: false },
               ].map(m => (
                 <div key={m.model} className={`flex items-center gap-2 px-4 py-2 rounded-sm border text-sm ${m.recommended ? "border-[#E8341A]/40 bg-[#E8341A]/5" : "border-white/10"}`}>
                   <span className="text-green-400 text-xs">✓</span>
                   <span className="text-white/70">{m.model}</span>
-                  {m.recommended && <span className="text-xs font-mono text-[#E8341A] ml-1">推荐</span>}
+                  {m.recommended && <span className="text-xs font-mono text-[#E8341A] ml-1">{t.recommended}</span>}
                 </div>
               ))}
             </div>
@@ -651,44 +783,48 @@ export default function Home() {
       <section id="pricing" className="py-24 md:py-32 bg-[#060e18]">
         <div className="max-w-[1400px] mx-auto px-6 md:px-12 lg:px-16">
           <div className="mb-16 text-center">
-            <p className="text-xs font-mono text-[#E8341A] tracking-[0.2em] uppercase mb-4">产品配置 · Product SKU</p>
+            <p className="text-xs font-mono text-[#E8341A] tracking-[0.2em] uppercase mb-4">{t.pricingLabel}</p>
             <h2 className="font-display text-4xl md:text-5xl font-black leading-tight mb-4">
-              选择你的<br />
-              <span className="text-[#E8341A]">ClawPool。</span>
+              {t.pricingTitle1}<br />
+              <span className="text-[#E8341A]">{t.pricingTitle2}</span>
             </h2>
-            <p className="text-white/40 text-base max-w-xl mx-auto">
-              所有版本均包含完整 I/O 扩展坞、140W GaN 供电和 OpenClaw AI 语音控制。按需选择存储容量和 AI 模块形态。
-            </p>
+            <p className="text-white/40 text-base max-w-xl mx-auto">{t.pricingDesc}</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {[
               {
-                name: "标准版",
-                nameEn: "Standard",
+                name: t.skuStd,
+                nameEn: lang === "zh" ? "Standard" : "标准版",
                 storage: "1 TB NVMe",
-                module: "磁吸旋钮（2.4\" OLED）",
+                module: lang === "zh" ? "磁吸旋钮（2.4\" OLED）" : "Magnetic Knob (2.4\" OLED)",
                 highlight: false,
                 tag: null,
-                features: ["完整 I/O 扩展坞", "140W GaN 供电", "OpenClaw 语音 AI", "AES-256 加密存储", "磁吸旋钮模块", "配套 App"],
+                features: lang === "zh"
+                  ? ["完整 I/O 扩展坞", "140W GaN 供电", "OpenClaw 语音 AI", "AES-256 加密存储", "磁吸旋钮模块", "配套 App"]
+                  : ["Full I/O Hub", "140W GaN Power", "OpenClaw Voice AI", "AES-256 Encrypted Storage", "Magnetic Knob Module", "Companion App"],
               },
               {
-                name: "进阶版",
-                nameEn: "Advanced",
+                name: t.skuAdv,
+                nameEn: lang === "zh" ? "Advanced" : "进阶版",
                 storage: "2 TB NVMe",
-                module: "磁吸旋钮（2.4\" OLED）",
+                module: lang === "zh" ? "磁吸旋钮（2.4\" OLED）" : "Magnetic Knob (2.4\" OLED)",
                 highlight: true,
-                tag: "最受欢迎",
-                features: ["完整 I/O 扩展坞", "140W GaN 供电", "OpenClaw 语音 AI", "AES-256 加密存储", "磁吸旋钮模块", "配套 App", "2TB 大容量存储"],
+                tag: t.skuPop,
+                features: lang === "zh"
+                  ? ["完整 I/O 扩展坞", "140W GaN 供电", "OpenClaw 语音 AI", "AES-256 加密存储", "磁吸旋钮模块", "配套 App", "2TB 大容量存储"]
+                  : ["Full I/O Hub", "140W GaN Power", "OpenClaw Voice AI", "AES-256 Encrypted Storage", "Magnetic Knob Module", "Companion App", "2TB Large Storage"],
               },
               {
-                name: "旗舰版",
-                nameEn: "Flagship",
+                name: t.skuFlg,
+                nameEn: lang === "zh" ? "Flagship" : "旗舰版",
                 storage: "4 TB NVMe",
-                module: "机器人版（2.8\" AMOLED + 双轴舵机）",
+                module: lang === "zh" ? "机器人版（2.8\" AMOLED + 双轴舵机）" : "Robot Edition (2.8\" AMOLED + Dual-axis servo)",
                 highlight: false,
-                tag: "旗舰",
-                features: ["完整 I/O 扩展坞", "140W GaN 供电", "OpenClaw 语音 AI", "AES-256 加密存储", "机器人 AI 模块", "声源定位转头", "4TB 旗舰存储"],
+                tag: t.skuFlgTag,
+                features: lang === "zh"
+                  ? ["完整 I/O 扩展坞", "140W GaN 供电", "OpenClaw 语音 AI", "AES-256 加密存储", "机器人 AI 模块", "声源定位转头", "4TB 旗舰存储"]
+                  : ["Full I/O Hub", "140W GaN Power", "OpenClaw Voice AI", "AES-256 Encrypted Storage", "Robot AI Module", "Voice-tracking head", "4TB Flagship Storage"],
               },
             ].map((sku) => (
               <div key={sku.name}
@@ -703,18 +839,16 @@ export default function Home() {
                     <h3 className="font-display text-2xl font-black text-white">{sku.name}</h3>
                     <p className="text-xs font-mono text-white/30 mt-1">{sku.nameEn}</p>
                   </div>
-
                   <div className="space-y-3 mb-8">
                     <div className="flex items-center gap-2">
-                      <span className="text-xs text-white/40 w-16 shrink-0">存储</span>
+                      <span className="text-xs text-white/40 w-16 shrink-0">{lang === "zh" ? "存储" : "Storage"}</span>
                       <span className="text-sm font-mono text-white/80">{sku.storage}</span>
                     </div>
                     <div className="flex items-start gap-2">
-                      <span className="text-xs text-white/40 w-16 shrink-0">AI 模块</span>
+                      <span className="text-xs text-white/40 w-16 shrink-0">{lang === "zh" ? "AI 模块" : "AI Module"}</span>
                       <span className="text-sm text-white/80 leading-relaxed">{sku.module}</span>
                     </div>
                   </div>
-
                   <div className="space-y-2 mb-8">
                     {sku.features.map(f => (
                       <div key={f} className="flex items-center gap-2 text-sm text-white/60">
@@ -723,10 +857,9 @@ export default function Home() {
                       </div>
                     ))}
                   </div>
-
                   <a href="https://kickstarter.com" target="_blank" rel="noopener noreferrer"
                     className={`block w-full text-center py-3 text-sm font-semibold rounded-sm transition-colors ${sku.highlight ? "bg-[#E8341A] text-white hover:bg-[#c42a14]" : "border border-white/20 text-white/70 hover:border-white/50 hover:text-white"}`}>
-                    Kickstarter 早鸟支持
+                    {t.skuCta}
                   </a>
                 </div>
               </div>
@@ -735,42 +868,32 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ─── CTA FOOTER ─── */}
+      {/* ─── CTA ─── */}
       <section className="relative py-32 overflow-hidden bg-[#0D1B2A]">
-        {/* Background image */}
         <div className="absolute inset-0">
-          <img src={IMGS.socialPost} alt="" className="w-full h-full object-cover object-center opacity-15" />
+          <img src={IMGS.socialPost} alt="" className="w-full h-full object-cover object-center opacity-10" />
           <div className="absolute inset-0 bg-gradient-to-t from-[#0D1B2A] via-[#0D1B2A]/80 to-[#0D1B2A]" />
         </div>
-
         <div className="relative z-10 max-w-3xl mx-auto px-6 text-center">
-          {/* Logo */}
-          <img src={IMGS.logoLight} alt="ClawPool" className="h-16 md:h-20 w-auto object-contain mx-auto mb-10" />
-
+          <img src={IMGS.logoLight} alt="ClawPool" className="h-14 md:h-18 w-auto object-contain mx-auto mb-10"
+            style={{ filter: "drop-shadow(0 0 12px rgba(232,52,26,0.4))" }} />
           <h2 className="font-display text-4xl md:text-6xl font-black leading-tight mb-6">
-            你的 AI 助手<br />
-            <span className="text-[#E8341A]">安全的家。</span>
+            {t.ctaTitle1}<br />
+            <span className="text-[#E8341A]">{t.ctaTitle2}</span>
           </h2>
-          <p className="text-white/50 text-base md:text-lg leading-relaxed mb-4">
-            The Secure Habitat for Your AI Agent.
-          </p>
-          <p className="text-white/40 text-sm leading-relaxed mb-10 max-w-xl mx-auto">
-            ClawPool 即将登陆 Kickstarter。成为早期支持者，以最优惠的价格获得这台将 Mac Mini 变为真正 AI 工作站的设备。
-          </p>
-
+          <p className="text-white/40 text-base md:text-lg leading-relaxed mb-3">{t.ctaSub}</p>
+          <p className="text-white/35 text-sm leading-relaxed mb-10 max-w-xl mx-auto">{t.ctaDesc}</p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
             <a href="https://kickstarter.com" target="_blank" rel="noopener noreferrer"
               className="px-10 py-4 bg-[#E8341A] text-white font-bold text-base rounded-sm hover:bg-[#c42a14] transition-colors">
-              支持众筹 — Back on Kickstarter →
+              {t.backCta}
             </a>
           </div>
-
-          {/* Final stats */}
           <div className="flex justify-center gap-10 flex-wrap">
             {[
-              { val: "$150K", label: "众筹目标" },
-              { val: "30天", label: "众筹周期" },
-              { val: "5,000+", label: "目标支持者" },
+              { val: "$150K", label: lang === "zh" ? "众筹目标" : "Funding Goal" },
+              { val: "30" + (lang === "zh" ? "天" : " Days"), label: lang === "zh" ? "众筹周期" : "Campaign Duration" },
+              { val: "5,000+", label: lang === "zh" ? "目标支持者" : "Target Backers" },
             ].map(s => (
               <div key={s.val} className="text-center">
                 <div className="font-display font-black text-2xl text-white">{s.val}</div>
@@ -785,7 +908,7 @@ export default function Home() {
       <footer className="bg-[#060e18] border-t border-white/5 py-10">
         <div className="max-w-[1400px] mx-auto px-6 md:px-12 lg:px-16">
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-            <img src={IMGS.logoLight} alt="ClawPool" className="h-10 w-auto object-contain" />
+            <img src={IMGS.logoLight} alt="ClawPool" className="h-8 w-auto object-contain" />
             <div className="flex gap-8">
               {navLinks.map(l => (
                 <a key={l.href} href={l.href} className="text-xs text-white/30 hover:text-white/60 transition-colors font-mono">
