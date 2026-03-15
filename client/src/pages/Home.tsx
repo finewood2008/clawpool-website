@@ -24,6 +24,7 @@ const IMGS = {
   logoLight: `${CDN}/logo_dark_bg_cd6e8d3d.webp`,
   logoDark: `${CDN}/logo_horizontal_dark_e9f8c65d.webp`,
   socialPost: `${CDN}/social_post_4568c578.png`,
+  knobHD: `${CDN}/pasted_file_1f52up_clawpool_knob_two_contacts_hd_1_34947723.webp`,
 };
 
 // Bilingual content
@@ -642,7 +643,7 @@ export default function Home() {
             </div>
           </div>
           <div className="relative h-[400px] lg:h-auto overflow-hidden order-1 lg:order-2">
-            <img src={IMGS.sceneBoot} alt="ClawPool Boot Scene"
+            <img src={IMGS.knobHD} alt="ClawPool Magnetic Knob"
               className="w-full h-full object-cover object-center" />
             <div className="absolute inset-0 bg-gradient-to-l from-transparent to-[#060e18] hidden lg:block" />
             <div className="absolute inset-0 bg-gradient-to-t from-[#060e18] to-transparent lg:hidden" />
@@ -658,15 +659,15 @@ export default function Home() {
             <div className="relative flex items-center justify-center">
               <div className="absolute inset-0 bg-[#4FC3F7]/5 blur-[80px] rounded-full" />
               {/* Dark card background to make the product pop */}
-              <div className="relative z-10 bg-[#060e18] rounded-sm p-8 w-full max-w-[480px] mx-auto border border-white/8">
+              <div className="relative z-10 w-full max-w-[540px] mx-auto rounded-sm overflow-hidden">
                 <img
-                  src={IMGS.frontFlat}
-                  alt="ClawPool Front View"
-                  className="w-full h-auto object-contain"
+                  src={IMGS.workstation}
+                  alt="ClawPool One Cable Setup"
+                  className="w-full h-[380px] object-cover object-center"
                   style={{ filter: "drop-shadow(0 20px 50px rgba(79,195,247,0.15))" }}
                 />
-                {/* Port labels overlay */}
-                <div className="mt-4 grid grid-cols-3 gap-2">
+                {/* Port labels overlay at bottom */}
+                <div className="bg-[#060e18] border border-white/8 p-4 grid grid-cols-3 gap-2 mt-0">
                   {[
                     { label: "TB4 × 2", color: "#4FC3F7" },
                     { label: "HDMI 2.1 × 2", color: "#4FC3F7" },
@@ -730,55 +731,58 @@ export default function Home() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {/* Use case 1: Developer — workstation scene */}
-            <div className="relative rounded-sm overflow-hidden group">
-              <img src={IMGS.workstation} alt="Developer workstation"
-                className="w-full h-[360px] object-cover object-center group-hover:scale-105 transition-transform duration-700" />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#0D1B2A] via-[#0D1B2A]/50 to-transparent" />
-              <div className="absolute bottom-0 left-0 right-0 p-8">
+            <div className="rounded-sm overflow-hidden group bg-[#0a1628] border border-white/8">
+              <div className="overflow-hidden">
+                <img src={IMGS.workstation} alt="Developer workstation"
+                  className="w-full h-[300px] object-cover object-center group-hover:scale-105 transition-transform duration-700" />
+              </div>
+              <div className="p-6">
                 <p className="text-xs font-mono text-[#E8341A] tracking-widest uppercase mb-2">{t.uc1Label}</p>
-                <h3 className="font-display text-2xl font-black text-white mb-2">{t.uc1Title}</h3>
+                <h3 className="font-display text-xl font-black text-white mb-2">{t.uc1Title}</h3>
                 <p className="text-white/60 text-sm leading-relaxed mb-4">{t.uc1Desc}</p>
                 <div className="flex flex-wrap gap-2">
                   {(lang === "zh"
                     ? ["4TB 安全存储", "语音触发构建", "双显示器", "本地 AI 推理"]
                     : ["4TB Secure Storage", "Voice-triggered builds", "Dual monitors", "Local AI inference"]
-                  ).map(t => (
-                    <span key={t} className="text-xs bg-white/10 border border-white/15 px-2.5 py-1 rounded text-white/60">{t}</span>
+                  ).map(tag => (
+                    <span key={tag} className="text-xs bg-white/10 border border-white/15 px-2.5 py-1 rounded text-white/60">{tag}</span>
                   ))}
                 </div>
               </div>
             </div>
 
             {/* Use case 2: Designer / Creative — studio scene */}
-            <div className="relative rounded-sm overflow-hidden group">
-              <img src={IMGS.studioScene} alt="Creative studio"
-                className="w-full h-[360px] object-cover object-center group-hover:scale-105 transition-transform duration-700" />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#0D1B2A] via-[#0D1B2A]/50 to-transparent" />
-              <div className="absolute bottom-0 left-0 right-0 p-8">
+            <div className="rounded-sm overflow-hidden group bg-[#0a1628] border border-white/8">
+              <div className="overflow-hidden">
+                <img src={IMGS.studioScene} alt="Creative studio"
+                  className="w-full h-[300px] object-cover object-center group-hover:scale-105 transition-transform duration-700" />
+              </div>
+              <div className="p-6">
                 <p className="text-xs font-mono text-[#4FC3F7] tracking-widest uppercase mb-2">{t.uc2Label}</p>
-                <h3 className="font-display text-2xl font-black text-white mb-2">{t.uc2Title}</h3>
+                <h3 className="font-display text-xl font-black text-white mb-2">{t.uc2Title}</h3>
                 <p className="text-white/60 text-sm leading-relaxed mb-4">{t.uc2Desc}</p>
                 <div className="flex flex-wrap gap-2">
                   {(lang === "zh"
                     ? ["Wacom 全接口", "语音切换工作流", "素材自动归档", "4TB 创意存储"]
                     : ["Wacom full I/O", "Voice workflow switch", "Auto asset archiving", "4TB creative storage"]
-                  ).map(t => (
-                    <span key={t} className="text-xs bg-white/10 border border-white/15 px-2.5 py-1 rounded text-white/60">{t}</span>
+                  ).map(tag => (
+                    <span key={tag} className="text-xs bg-white/10 border border-white/15 px-2.5 py-1 rounded text-white/60">{tag}</span>
                   ))}
                 </div>
               </div>
             </div>
 
             {/* Use case 3: Vibe Coding — coding image */}
-            <div className="relative rounded-sm overflow-hidden group">
-              <img src={IMGS.coding} alt="Voice-driven Vibe Coding"
-                className="w-full h-[300px] object-cover object-center group-hover:scale-105 transition-transform duration-700" />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#0D1B2A] via-[#0D1B2A]/40 to-transparent" />
-              <div className="absolute bottom-0 left-0 right-0 p-8">
+            <div className="rounded-sm overflow-hidden group bg-[#0a1628] border border-white/8">
+              <div className="overflow-hidden">
+                <img src={IMGS.coding} alt="Voice-driven Vibe Coding"
+                  className="w-full h-[300px] object-cover object-center group-hover:scale-105 transition-transform duration-700" />
+              </div>
+              <div className="p-6">
                 <p className="text-xs font-mono text-[#E8341A] tracking-widest uppercase mb-2">{t.uc3Label}</p>
-                <h3 className="font-display text-2xl font-black text-white mb-2">{t.uc3Title}</h3>
-                <p className="text-white/60 text-sm leading-relaxed">{t.uc3Desc}</p>
-                <div className="flex flex-wrap gap-2 mt-4">
+                <h3 className="font-display text-xl font-black text-white mb-2">{t.uc3Title}</h3>
+                <p className="text-white/60 text-sm leading-relaxed mb-4">{t.uc3Desc}</p>
+                <div className="flex flex-wrap gap-2">
                   {(lang === "zh"
                     ? ["语音生成代码", "自动运行测试", "AI 提交 PR", "本地 NLP"]
                     : ["Voice-to-code", "Auto-run tests", "AI commits PR", "Local NLP"]
@@ -790,15 +794,16 @@ export default function Home() {
             </div>
 
             {/* Use case 4: Research — research helper image */}
-            <div className="relative rounded-sm overflow-hidden group">
-              <img src={IMGS.research} alt="AI Research Assistant"
-                className="w-full h-[300px] object-cover object-center group-hover:scale-105 transition-transform duration-700" />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#0D1B2A] via-[#0D1B2A]/40 to-transparent" />
-              <div className="absolute bottom-0 left-0 right-0 p-8">
+            <div className="rounded-sm overflow-hidden group bg-[#0a1628] border border-white/8">
+              <div className="overflow-hidden">
+                <img src={IMGS.research} alt="AI Research Assistant"
+                  className="w-full h-[300px] object-cover object-center group-hover:scale-105 transition-transform duration-700" />
+              </div>
+              <div className="p-6">
                 <p className="text-xs font-mono text-[#4FC3F7] tracking-widest uppercase mb-2">{t.uc4Label}</p>
-                <h3 className="font-display text-2xl font-black text-white mb-2">{t.uc4Title}</h3>
-                <p className="text-white/60 text-sm leading-relaxed">{t.uc4Desc}</p>
-                <div className="flex flex-wrap gap-2 mt-4">
+                <h3 className="font-display text-xl font-black text-white mb-2">{t.uc4Title}</h3>
+                <p className="text-white/60 text-sm leading-relaxed mb-4">{t.uc4Desc}</p>
+                <div className="flex flex-wrap gap-2">
                   {(lang === "zh"
                     ? ["本地 AI 推理", "数据不上云", "隐私保护", "秒级分析"]
                     : ["Local AI inference", "Data never leaves", "Privacy protected", "Instant analysis"]
