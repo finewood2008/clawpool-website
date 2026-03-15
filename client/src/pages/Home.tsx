@@ -12,7 +12,7 @@ import { useState } from "react";
 const CDN = "https://d2xsxph8kpxj0f.cloudfront.net/310519663430257498/jfDsKVzTVmzoN4bJ42z8Cq";
 
 const IMGS = {
-  hero: `${CDN}/render_v2_01_hero_noled(1)_ceafca18.webp`,
+  hero: `${CDN}/clawpool_hero_nobg_b20509dd.png`,
   frontFlat: `${CDN}/render_v2_04_front_flat_f6d94ecf.webp`,
   topView: `${CDN}/render_v2_05_top_view_b70bba83.webp`,
   verticalShowcase: `${CDN}/clawpool_vertical_showcase_no_glow_1_9526b701.webp`,
@@ -422,8 +422,8 @@ export default function Home() {
               <div className="absolute w-[300px] h-[300px] rounded-full bg-[#4FC3F7]/8 blur-[80px] pointer-events-none translate-x-20" />
               <div className="relative z-10 w-full max-w-[560px]">
                 <img src={IMGS.hero} alt="ClawPool AI Dock"
-                  className="w-full h-auto object-contain drop-shadow-2xl"
-                  style={{ filter: "drop-shadow(0 40px 80px rgba(232,52,26,0.25))" }} />
+                  className="w-full h-auto object-contain"
+                  style={{ filter: "drop-shadow(0 20px 60px rgba(0,0,0,0.6)) drop-shadow(0 0 40px rgba(232,52,26,0.15))" }} />
                 <div className="absolute top-[15%] left-0 md:-left-8 bg-[#0a1218]/95 border border-[#E8341A]/40 backdrop-blur-sm px-3 py-2 rounded text-xs font-mono">
                   <div className="text-[#E8341A] font-bold">HEY CLAW</div>
                   <div className="text-white/50">{lang === "zh" ? "语音已激活" : "Voice Activated"}</div>
