@@ -315,21 +315,18 @@ export default function Home() {
               </div>
 
               {/* Headline */}
-              <h1 className="font-display text-[clamp(3.2rem,7.5vw,6rem)] font-black leading-[0.9] tracking-tight mb-5">
+              <h1 className="font-display text-[clamp(2.6rem,6vw,5rem)] font-black leading-[1.0] tracking-tight mb-4">
                 <span className="block text-white">{t.heroTitle1}</span>
                 <span className="block text-[#E8341A]">{t.heroTitle2}</span>
                 <span className="block text-white">{t.heroTitle3}</span>
               </h1>
-              <p className="text-sm font-mono text-[#4FC3F7] tracking-[0.12em] uppercase mb-5">
+              <p className="text-xs font-mono text-[#4FC3F7] tracking-[0.15em] uppercase mb-5">
                 {t.heroSub}
               </p>
 
-              {/* Description */}
-              <p className="text-base md:text-lg text-white/70 leading-relaxed max-w-lg mb-2">
+              {/* Description — show only current language */}
+              <p className="text-base md:text-lg text-white/70 leading-relaxed max-w-lg mb-8">
                 {t.heroDesc}
-              </p>
-              <p className="text-sm text-white/35 leading-relaxed max-w-lg mb-8">
-                {t.heroDescEn}
               </p>
 
               {/* CTAs */}
