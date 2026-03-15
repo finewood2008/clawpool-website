@@ -22,6 +22,7 @@ const IMGS = {
   studioScene: `${CDN}/clawpool_studio_scene_no_glow_1_6396fe9d.webp`,
   workstation: `${CDN}/scene_E_workstation_ai_34641bb1.webp`,
   logoLight: `${CDN}/logo_dark_bg_cd6e8d3d.webp`,
+  logoIcon: `${CDN}/logo_icon_only_b0267a9f.png`,
   logoDark: `${CDN}/logo_horizontal_dark_e9f8c65d.webp`,
   socialPost: `${CDN}/social_post_4568c578.png`,
   knobHD: `${CDN}/pasted_file_1f52up_clawpool_knob_two_contacts_hd_1_34947723.webp`,
@@ -273,23 +274,20 @@ export default function Home() {
       <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 md:px-10 h-20 bg-[#0a1218]/95 backdrop-blur-md border-b border-white/10">
         {/* Logo — icon + text */}
         <a href="#" className="flex items-center gap-3 shrink-0">
-          {/* Icon only — crop just the claw icon part */}
-          <div className="relative shrink-0" style={{ filter: "drop-shadow(0 0 8px rgba(232,52,26,0.35))" }}>
-            <img
-              src={IMGS.logoLight}
-              alt=""
-              aria-hidden="true"
-              className="h-12 md:h-14 w-auto object-contain"
-              style={{ maxWidth: "56px" }}
-            />
-          </div>
+          {/* Pure icon — graphic only, no text */}
+          <img
+            src={IMGS.logoIcon}
+            alt="ClawPool"
+            className="h-12 md:h-14 w-auto object-contain"
+            style={{ filter: "drop-shadow(0 0 8px rgba(232,52,26,0.35))" }}
+          />
           {/* Text lockup */}
           <div className="flex flex-col leading-none">
             <span
-              className="font-display font-black text-white tracking-tight"
+              className="font-display font-black tracking-tight"
               style={{ fontSize: "1.35rem", lineHeight: 1.1 }}
             >
-              ClawPool
+              <span className="text-white">Claw</span><span style={{ color: "#E8341A" }}>Pool</span>
             </span>
             <span
               className="font-mono text-white/55 tracking-[0.12em] uppercase"
