@@ -40,7 +40,7 @@ const T = {
     heroTitle3: "的扩展坞。",
     heroSub: "AN OPENCLAW AI-DOCK — The World's First OpenClaw Hardware",
     heroTagline: "完整版 OpenClaw · AI 安全隔离 · 语音直接操控电脑 · 内置音箱 — 像有个朋友坐在你旁边帮你工作。",
-    heroDesc: "ClawPool 内置完整版 OpenClaw AI，专为 Mac Mini 设计。AI 与你的主硬盘物理隔离，只能操作扩展坞专属硬盘——你决定让 AI 看什么。语音唤醒、自然对话、内置音箱，真正的 AI 工作伙伴。",
+    heroDesc: "ClawPool 内置完整版 OpenClaw AI，开箱即用，专为 Mac Mini 设计。AI 与你的主硬盘物理隔离，只能操作扩展坞专属硬盘——你决定让 AI 看什么。语音唤醒、自然对话、内置音箱，真正的 AI 工作伙伴。",
     heroDescEn: "The world's first dock with a full OpenClaw AI built in. Physical AI isolation, voice control, and built-in speaker — your AI companion, right on your desk.",
     learnMore: "了解功能",
     stat1: ["4TB", "最大存储", "MAX STORAGE"],
