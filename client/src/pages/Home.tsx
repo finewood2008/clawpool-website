@@ -17,11 +17,11 @@ const IMGS = {
   topView: `${CDN}/render_v2_05_top_view_b70bba83.webp`,
   verticalShowcase: `${CDN}/clawpool_vertical_showcase_no_glow_1_9526b701.webp`,
   coding: `${CDN}/clawpool_coding_final_corrected_1_e2b35fc1.webp`,
-  research: `${CDN}/clawpool_research_helper_mini_size_1_91436768.webp`,
+  research: `${CDN}/clawpool_research_helper_mini_size_1_f336e519.webp`,
   sceneBoot: `${CDN}/scene_D_boot_c864eea1.webp`,
   studioScene: `${CDN}/clawpool_studio_scene_no_glow_1_6396fe9d.webp`,
   workstation: `${CDN}/scene_E_workstation_ai_34641bb1.webp`,
-  logoLight: `${CDN}/logo_light_cropped_af279881.webp`,
+  logoLight: `${CDN}/logo_dark_bg_cd6e8d3d.webp`,
   logoDark: `${CDN}/logo_horizontal_dark_e9f8c65d.webp`,
   socialPost: `${CDN}/social_post_4568c578.png`,
 };
@@ -88,12 +88,12 @@ const T = {
     uc2Label: "设计师 / 创意工作者",
     uc2Title: "创意工作室的 AI 搭档",
     uc2Desc: "Wacom 绘板、摄影机、调色设备全部接入。语音指令切换工作流，AI 自动整理素材到专属存储库。",
-    uc3Label: "视频剪辑师 / 摄影师",
-    uc3Title: "高速存储 + 快速导入",
-    uc3Desc: "UHS-II SD 卡槽，插卡自动触发 AI 导入流程。PCIe 4.0 NVMe 7,000 MB/s，4K 素材秒级传输。",
-    uc4Label: "效率极客 / 家庭用户",
-    uc4Title: "桌面极简，能力极强",
-    uc4Desc: "140W GaN 内置电源，一根线消灭所有散线。旗舰版机器人模块会跟着你说话的方向转头——冷冰冰的硬件，有了温度。",
+    uc3Label: "开发者 / Vibe Coder",
+    uc3Title: "语音驱动 Vibe Coding",
+    uc3Desc: "说出你的想法，ClawPool 自动调用 AI 生成代码、运行测试、提交 PR。双手不离键盘，思路不被打断。",
+    uc4Label: "研究员 / 数据科学家",
+    uc4Title: "AI 辅助科研分析",
+    uc4Desc: "本地 AI 处理基因组数据、实验结果与论文摘要。数据不上云，隐私完全受保护，分析结果秒级呈现。",
     specLabel: "技术规格 · Specifications",
     specTitle1: "硬件规格",
     specTitle2: "一览。",
@@ -177,12 +177,12 @@ const T = {
     uc2Label: "Designer / Creative",
     uc2Title: "AI Partner for Your Studio",
     uc2Desc: "Connect Wacom tablets, cameras, and color tools. Voice commands switch workflows, AI auto-organizes assets into your dedicated storage library.",
-    uc3Label: "Video Editor / Photographer",
-    uc3Title: "Fast Storage + Quick Import",
-    uc3Desc: "UHS-II SD slot auto-triggers AI import on card insertion. PCIe 4.0 NVMe at 7,000 MB/s — 4K footage transfers in seconds.",
-    uc4Label: "Power User / Home User",
-    uc4Title: "Minimal Desk, Maximum Power",
-    uc4Desc: "Built-in 140W GaN eliminates all cable clutter. The Robot Edition module tracks your voice direction — cold hardware, warm personality.",
+    uc3Label: "Developer / Vibe Coder",
+    uc3Title: "Voice-Driven Vibe Coding",
+    uc3Desc: "Speak your intent — ClawPool calls AI to generate code, run tests, and commit PRs. Hands stay on the keyboard, flow state unbroken.",
+    uc4Label: "Researcher / Data Scientist",
+    uc4Title: "AI-Assisted Research",
+    uc4Desc: "Process genomic data, experimental results, and paper summaries with local AI. Data never leaves your desk — privacy protected, results in seconds.",
     specLabel: "Specifications · 技术规格",
     specTitle1: "Hardware",
     specTitle2: "at a Glance.",
@@ -325,10 +325,10 @@ export default function Home() {
               </p>
 
               {/* Description */}
-              <p className="text-base md:text-lg text-white/70 leading-relaxed max-w-lg mb-3">
+              <p className="text-base md:text-lg text-white/70 leading-relaxed max-w-lg mb-2">
                 {t.heroDesc}
               </p>
-              <p className="text-sm text-white/35 leading-relaxed max-w-lg mb-10">
+              <p className="text-sm text-white/35 leading-relaxed max-w-lg mb-8">
                 {t.heroDescEn}
               </p>
 
@@ -629,45 +629,43 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Use case 3: Photographer — coding image */}
+            {/* Use case 3: Vibe Coding — coding image */}
             <div className="relative rounded-sm overflow-hidden group">
-              <img src={IMGS.coding} alt="Photographer use case"
+              <img src={IMGS.coding} alt="Voice-driven Vibe Coding"
                 className="w-full h-[300px] object-cover object-center group-hover:scale-105 transition-transform duration-700" />
               <div className="absolute inset-0 bg-gradient-to-t from-[#0D1B2A] via-[#0D1B2A]/40 to-transparent" />
               <div className="absolute bottom-0 left-0 right-0 p-8">
                 <p className="text-xs font-mono text-[#E8341A] tracking-widest uppercase mb-2">{t.uc3Label}</p>
                 <h3 className="font-display text-2xl font-black text-white mb-2">{t.uc3Title}</h3>
                 <p className="text-white/60 text-sm leading-relaxed">{t.uc3Desc}</p>
+                <div className="flex flex-wrap gap-2 mt-4">
+                  {(lang === "zh"
+                    ? ["语音生成代码", "自动运行测试", "AI 提交 PR", "本地 NLP"]
+                    : ["Voice-to-code", "Auto-run tests", "AI commits PR", "Local NLP"]
+                  ).map(tag => (
+                    <span key={tag} className="text-xs bg-white/10 border border-white/15 px-2.5 py-1 rounded text-white/60">{tag}</span>
+                  ))}
+                </div>
               </div>
             </div>
 
-            {/* Use case 4: Efficiency */}
-            <div className="relative rounded-sm overflow-hidden group bg-[#0D1B2A] border border-white/8 p-8 flex flex-col justify-between">
-              <div>
-                <p className="text-xs font-mono text-[#4FC3F7] tracking-widest uppercase mb-4">{t.uc4Label}</p>
-                <h3 className="font-display text-2xl font-black text-white mb-4">{t.uc4Title}</h3>
-                <p className="text-white/60 text-sm leading-relaxed mb-6">{t.uc4Desc}</p>
-              </div>
-              <div className="grid grid-cols-2 gap-3">
-                {(lang === "zh"
-                  ? [
-                      { icon: "🤖", text: "声源定位转头（旗舰版）" },
-                      { icon: "🔌", text: "140W GaN 零散线" },
-                      { icon: "📱", text: "配套 App 一键配网" },
-                      { icon: "🔄", text: "OTA 持续功能更新" },
-                    ]
-                  : [
-                      { icon: "🤖", text: "Voice-tracking head (Flagship)" },
-                      { icon: "🔌", text: "140W GaN, zero cable clutter" },
-                      { icon: "📱", text: "Companion App setup in 2 min" },
-                      { icon: "🔄", text: "OTA continuous updates" },
-                    ]
-                ).map(f => (
-                  <div key={f.text} className="flex items-start gap-2">
-                    <span className="text-base shrink-0">{f.icon}</span>
-                    <span className="text-xs text-white/50 leading-relaxed">{f.text}</span>
-                  </div>
-                ))}
+            {/* Use case 4: Research — research helper image */}
+            <div className="relative rounded-sm overflow-hidden group">
+              <img src={IMGS.research} alt="AI Research Assistant"
+                className="w-full h-[300px] object-cover object-center group-hover:scale-105 transition-transform duration-700" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#0D1B2A] via-[#0D1B2A]/40 to-transparent" />
+              <div className="absolute bottom-0 left-0 right-0 p-8">
+                <p className="text-xs font-mono text-[#4FC3F7] tracking-widest uppercase mb-2">{t.uc4Label}</p>
+                <h3 className="font-display text-2xl font-black text-white mb-2">{t.uc4Title}</h3>
+                <p className="text-white/60 text-sm leading-relaxed">{t.uc4Desc}</p>
+                <div className="flex flex-wrap gap-2 mt-4">
+                  {(lang === "zh"
+                    ? ["本地 AI 推理", "数据不上云", "隐私保护", "秒级分析"]
+                    : ["Local AI inference", "Data never leaves", "Privacy protected", "Instant analysis"]
+                  ).map(tag => (
+                    <span key={tag} className="text-xs bg-white/10 border border-white/15 px-2.5 py-1 rounded text-white/60">{tag}</span>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
