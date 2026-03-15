@@ -12,7 +12,7 @@ import { useState } from "react";
 const CDN = "https://d2xsxph8kpxj0f.cloudfront.net/310519663430257498/jfDsKVzTVmzoN4bJ42z8Cq";
 
 const IMGS = {
-  hero: `${CDN}/clawpool_hero_nobg_b20509dd.png`,
+  hero: `${CDN}/clawpool_front_ports_only_1(1)_ff8f79f1.webp`,
   frontFlat: `${CDN}/render_v2_04_front_flat_f6d94ecf.webp`,
   topView: `${CDN}/render_v2_05_top_view_b70bba83.webp`,
   verticalShowcase: `${CDN}/clawpool_vertical_showcase_no_glow_1_9526b701.webp`,
