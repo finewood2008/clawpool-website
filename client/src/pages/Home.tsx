@@ -102,15 +102,20 @@ const T = {
     specTitle2: "一览。",
     specSub: "Hardware at a Glance",
     pricingLabel: "产品配置 · Product SKU",
-    pricingTitle1: "选择你的",
+    pricingTitle1: "配置你的",
     pricingTitle2: "ClawPool。",
-    pricingDesc: "所有版本均包含完整 I/O 扩展坞、140W GaN 供电和 OpenClaw AI 语音控制。按需选择存储容量和 AI 模块形态。",
-    skuStd: "标准版",
-    skuAdv: "进阶版",
-    skuFlg: "旗舰版",
-    skuPop: "最受欢迎",
-    skuFlgTag: "旗舰",
+    pricingDesc: "一款硬件，支持 Mac 和 Windows。选择你的系统和存储容量，价格将在 Kickstarter 众筹时公布。",
     skuCta: "Kickstarter 早鸟支持",
+    osLabel: "选择系统",
+    storageLabel: "选择容量",
+    osMac: "Mac",
+    osWin: "Windows",
+    storageNote: "AI HUB 专属存储，与主硬盘物理隔离",
+    configSummary: "你的配置",
+    priceTBA: "价格待定",
+    priceTBANote: "将在 Kickstarter 众筹时公布",
+    included: "所有配置均包含",
+    includedFeatures: ["完整 I/O 扩展坞", "OpenClaw AI（完整版）", "磁吸旋钮 AI 情感模块", "内置音箱", "AES-256 加密存储", "配套 App"],
     ctaTitle1: "一个真正懂你",
     ctaTitle2: "的 AI 工作伙伴。",
     ctaSub: "The First OpenClaw AI Dock. Secure by Design.",
@@ -209,15 +214,20 @@ const T = {
     specTitle2: "at a Glance.",
     specSub: "硬件规格一览",
     pricingLabel: "Product SKU · 产品配置",
-    pricingTitle1: "Choose Your",
+    pricingTitle1: "Configure Your",
     pricingTitle2: "ClawPool.",
-    pricingDesc: "All editions include the full I/O hub, 140W GaN power, and OpenClaw AI voice control. Choose your storage capacity and AI module style.",
-    skuStd: "Standard",
-    skuAdv: "Advanced",
-    skuFlg: "Flagship",
-    skuPop: "Most Popular",
-    skuFlgTag: "Flagship",
+    pricingDesc: "One hardware, supports Mac and Windows. Choose your OS and storage capacity. Pricing will be announced at Kickstarter launch.",
     skuCta: "Back on Kickstarter",
+    osLabel: "Choose OS",
+    storageLabel: "Choose Storage",
+    osMac: "Mac",
+    osWin: "Windows",
+    storageNote: "AI HUB dedicated storage, physically isolated from main drive",
+    configSummary: "Your Configuration",
+    priceTBA: "Price TBA",
+    priceTBANote: "Will be announced at Kickstarter launch",
+    included: "All configurations include",
+    includedFeatures: ["Full I/O Hub", "Full OpenClaw AI", "Magnetic Knob AI Module", "Built-in Speaker", "AES-256 Encrypted Storage", "Companion App"],
     ctaTitle1: "A True AI Companion",
     ctaTitle2: "That Understands You.",
     ctaSub: "一个真正懂你的 AI 工作伙伴。",
@@ -253,6 +263,8 @@ export default function Home() {
   const [waitlistEmail, setWaitlistEmail] = useState("");
   const [waitlistSubmitted, setWaitlistSubmitted] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const [selectedOS, setSelectedOS] = useState<"mac" | "windows">("mac");
+  const [selectedStorage, setSelectedStorage] = useState<"512GB" | "1TB" | "2TB">("1TB");
   const t = T[lang];
 
   const handleWaitlistSubmit = (e: React.FormEvent) => {
@@ -1004,19 +1016,35 @@ export default function Home() {
           {/* Compatibility */}
           <div className="mt-10 p-6 bg-[#060e18] border border-white/8 rounded-sm">
             <p className="text-xs font-mono text-white/40 uppercase tracking-widest mb-4">{t.compatLabel}</p>
-            <div className="flex flex-wrap gap-3">
-              {[
-                { model: "Mac Mini M4 (2024)", recommended: true },
-                { model: "Mac Mini M4 Pro (2024)", recommended: true },
-                { model: "Mac Mini M2 (2023)", recommended: false },
-                { model: "Mac Mini M2 Pro (2023)", recommended: false },
-              ].map(m => (
-                <div key={m.model} className={`flex items-center gap-2 px-4 py-2 rounded-sm border text-sm ${m.recommended ? "border-[#E8341A]/40 bg-[#E8341A]/5" : "border-white/10"}`}>
-                  <span className="text-green-400 text-xs">✓</span>
-                  <span className="text-white/70">{m.model}</span>
-                  {m.recommended && <span className="text-xs font-mono text-[#E8341A] ml-1">{t.recommended}</span>}
-                </div>
-              ))}
+            <div className="mb-4">
+              <p className="text-xs text-white/30 font-mono mb-3">macOS</p>
+              <div className="flex flex-wrap gap-3 mb-5">
+                {[
+                  { model: "Mac Mini M4 (2024)", recommended: true },
+                  { model: "Mac Mini M4 Pro (2024)", recommended: true },
+                  { model: "Mac Mini M2 (2023)", recommended: false },
+                  { model: "Mac Mini M2 Pro (2023)", recommended: false },
+                ].map(m => (
+                  <div key={m.model} className={`flex items-center gap-2 px-4 py-2 rounded-sm border text-sm ${m.recommended ? "border-[#E8341A]/40 bg-[#E8341A]/5" : "border-white/10"}`}>
+                    <span className="text-green-400 text-xs">✓</span>
+                    <span className="text-white/70">{m.model}</span>
+                    {m.recommended && <span className="text-xs font-mono text-[#E8341A] ml-1">{t.recommended}</span>}
+                  </div>
+                ))}
+              </div>
+              <p className="text-xs text-white/30 font-mono mb-3">Windows</p>
+              <div className="flex flex-wrap gap-3">
+                {[
+                  { model: "Windows 11 (x64)", recommended: true },
+                  { model: "Windows 10 (x64)", recommended: false },
+                ].map(m => (
+                  <div key={m.model} className={`flex items-center gap-2 px-4 py-2 rounded-sm border text-sm ${m.recommended ? "border-[#4FC3F7]/40 bg-[#4FC3F7]/5" : "border-white/10"}`}>
+                    <span className="text-green-400 text-xs">✓</span>
+                    <span className="text-white/70">{m.model}</span>
+                    {m.recommended && <span className="text-xs font-mono text-[#4FC3F7] ml-1">{t.recommended}</span>}
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>
@@ -1034,84 +1062,112 @@ export default function Home() {
             <p className="text-white/40 text-base max-w-xl mx-auto">{t.pricingDesc}</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {[
-              {
-                name: t.skuStd,
-                nameEn: lang === "zh" ? "Standard" : "标准版",
-                storage: "1 TB NVMe",
-                module: lang === "zh" ? "磁吸旋钮（2.4\" OLED）" : "Magnetic Knob (2.4\" OLED)",
-                highlight: false,
-                tag: null,
-                features: lang === "zh"
-                  ? ["完整 I/O 扩展坞", "140W GaN 供电", "OpenClaw 语音 AI", "AES-256 加密存储", "磁吸旋钮模块", "配套 App"]
-                  : ["Full I/O Hub", "140W GaN Power", "OpenClaw Voice AI", "AES-256 Encrypted Storage", "Magnetic Knob Module", "Companion App"],
-              },
-              {
-                name: t.skuAdv,
-                nameEn: lang === "zh" ? "Advanced" : "进阶版",
-                storage: "2 TB NVMe",
-                module: lang === "zh" ? "磁吸旋钮（2.4\" OLED）" : "Magnetic Knob (2.4\" OLED)",
-                highlight: true,
-                tag: t.skuPop,
-                features: lang === "zh"
-                  ? ["完整 I/O 扩展坞", "140W GaN 供电", "OpenClaw 语音 AI", "AES-256 加密存储", "磁吸旋钮模块", "配套 App", "2TB 大容量存储"]
-                  : ["Full I/O Hub", "140W GaN Power", "OpenClaw Voice AI", "AES-256 Encrypted Storage", "Magnetic Knob Module", "Companion App", "2TB Large Storage"],
-              },
-              {
-                name: t.skuFlg,
-                nameEn: lang === "zh" ? "Flagship" : "旗舰版",
-                storage: "4 TB NVMe",
-                module: lang === "zh" ? "机器人版（2.8\" AMOLED + 双轴舵机）" : "Robot Edition (2.8\" AMOLED + Dual-axis servo)",
-                highlight: false,
-                tag: t.skuFlgTag,
-                features: lang === "zh"
-                  ? ["完整 I/O 扩展坞", "140W GaN 供电", "OpenClaw 语音 AI", "AES-256 加密存储", "机器人 AI 模块", "声源定位转头", "4TB 旗舰存储"]
-                  : ["Full I/O Hub", "140W GaN Power", "OpenClaw Voice AI", "AES-256 Encrypted Storage", "Robot AI Module", "Voice-tracking head", "4TB Flagship Storage"],
-              },
-            ].map((sku) => (
-              <div key={sku.name}
-                className={`relative rounded-sm overflow-hidden border transition-all ${sku.highlight ? "border-[#E8341A] bg-[#E8341A]/5" : "border-white/10 bg-[#0D1B2A]"}`}>
-                {sku.tag && (
-                  <div className={`absolute top-4 right-4 text-xs font-mono px-2 py-1 rounded ${sku.highlight ? "bg-[#E8341A] text-white" : "bg-white/10 text-white/60"}`}>
-                    {sku.tag}
-                  </div>
-                )}
-                <div className="p-8">
-                  <div className="mb-6">
-                    <h3 className="font-display text-2xl font-black text-white">{sku.name}</h3>
-                    <p className="text-xs font-mono text-white/30 mt-1">{sku.nameEn}</p>
-                  </div>
-                  <div className="space-y-3 mb-8">
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs text-white/40 w-16 shrink-0">{lang === "zh" ? "存储" : "Storage"}</span>
-                      <span className="text-sm font-mono text-white/80">{sku.storage}</span>
-                    </div>
-                    <div className="flex items-start gap-2">
-                      <span className="text-xs text-white/40 w-16 shrink-0">{lang === "zh" ? "AI 模块" : "AI Module"}</span>
-                      <span className="text-sm text-white/80 leading-relaxed">{sku.module}</span>
-                    </div>
-                  </div>
-                  <div className="space-y-2 mb-8">
-                    {sku.features.map(f => (
-                      <div key={f} className="flex items-center gap-2 text-sm text-white/60">
-                        <span className="text-[#4FC3F7] text-xs">✓</span>
-                        {f}
-                      </div>
-                    ))}
-                  </div>
-                  <a href="https://kickstarter.com" target="_blank" rel="noopener noreferrer"
-                    className={`block w-full text-center py-3 text-sm font-semibold rounded-sm transition-colors ${sku.highlight ? "bg-[#E8341A] text-white hover:bg-[#c42a14]" : "border border-white/20 text-white/70 hover:border-white/50 hover:text-white"}`}>
-                    {t.skuCta}
-                  </a>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start max-w-4xl mx-auto">
+            {/* Left: Configurator */}
+            <div className="space-y-8">
+              {/* OS Selection */}
+              <div>
+                <p className="text-xs font-mono text-white/40 uppercase tracking-widest mb-4">{t.osLabel}</p>
+                <div className="grid grid-cols-2 gap-3">
+                  {(["mac", "windows"] as const).map((os) => (
+                    <button
+                      key={os}
+                      onClick={() => setSelectedOS(os)}
+                      className={`relative flex flex-col items-center gap-3 p-5 rounded-sm border transition-all ${
+                        selectedOS === os
+                          ? "border-[#E8341A] bg-[#E8341A]/8"
+                          : "border-white/10 bg-[#0D1B2A] hover:border-white/30"
+                      }`}
+                    >
+                      {selectedOS === os && (
+                        <span className="absolute top-3 right-3 w-2 h-2 rounded-full bg-[#E8341A]" />
+                      )}
+                      <span className="text-2xl">{os === "mac" ? "🍎" : "🪟"}</span>
+                      <span className={`text-sm font-semibold ${selectedOS === os ? "text-white" : "text-white/50"}`}>
+                        {os === "mac" ? t.osMac : t.osWin}
+                      </span>
+                      <span className="text-xs font-mono text-white/30">
+                        {os === "mac" ? "macOS 14+" : "Windows 11"}
+                      </span>
+                    </button>
+                  ))}
                 </div>
               </div>
-            ))}
+
+              {/* Storage Selection */}
+              <div>
+                <p className="text-xs font-mono text-white/40 uppercase tracking-widest mb-4">{t.storageLabel}</p>
+                <div className="grid grid-cols-3 gap-3">
+                  {(["512GB", "1TB", "2TB"] as const).map((size) => (
+                    <button
+                      key={size}
+                      onClick={() => setSelectedStorage(size)}
+                      className={`relative flex flex-col items-center gap-2 p-4 rounded-sm border transition-all ${
+                        selectedStorage === size
+                          ? "border-[#E8341A] bg-[#E8341A]/8"
+                          : "border-white/10 bg-[#0D1B2A] hover:border-white/30"
+                      }`}
+                    >
+                      {selectedStorage === size && (
+                        <span className="absolute top-2 right-2 w-1.5 h-1.5 rounded-full bg-[#E8341A]" />
+                      )}
+                      <span className={`text-lg font-display font-black ${selectedStorage === size ? "text-white" : "text-white/50"}`}>
+                        {size}
+                      </span>
+                      <span className="text-xs font-mono text-white/30">NVMe</span>
+                    </button>
+                  ))}
+                </div>
+                <p className="text-xs text-white/25 mt-3 font-mono">{t.storageNote}</p>
+              </div>
+            </div>
+
+            {/* Right: Summary */}
+            <div className="bg-[#0D1B2A] border border-white/10 rounded-sm p-8">
+              <p className="text-xs font-mono text-white/40 uppercase tracking-widest mb-6">{t.configSummary}</p>
+
+              {/* Selected config display */}
+              <div className="flex items-center gap-4 mb-6 pb-6 border-b border-white/8">
+                <div className="w-12 h-12 rounded-sm bg-[#060e18] border border-white/10 flex items-center justify-center text-2xl">
+                  {selectedOS === "mac" ? "🍎" : "🪟"}
+                </div>
+                <div>
+                  <p className="text-white font-semibold">
+                    ClawPool · {selectedOS === "mac" ? t.osMac : t.osWin}
+                  </p>
+                  <p className="text-sm font-mono text-[#E8341A]">{selectedStorage} NVMe</p>
+                </div>
+              </div>
+
+              {/* Price TBA */}
+              <div className="mb-6 pb-6 border-b border-white/8">
+                <p className="text-3xl font-display font-black text-white/30">{t.priceTBA}</p>
+                <p className="text-xs font-mono text-white/25 mt-1">{t.priceTBANote}</p>
+              </div>
+
+              {/* Included features */}
+              <div className="mb-8">
+                <p className="text-xs font-mono text-white/40 uppercase tracking-widest mb-4">{t.included}</p>
+                <div className="space-y-2">
+                  {t.includedFeatures.map((f: string) => (
+                    <div key={f} className="flex items-center gap-2 text-sm text-white/60">
+                      <span className="text-[#4FC3F7] text-xs">✓</span>
+                      {f}
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <a href="https://kickstarter.com" target="_blank" rel="noopener noreferrer"
+                className="block w-full text-center py-3 text-sm font-semibold rounded-sm bg-[#E8341A] text-white hover:bg-[#c42a14] transition-colors">
+                {t.skuCta}
+              </a>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* ─── FAQ ─── */}
+            {/* ─── FAQ ─── */}
       <section className="py-24 md:py-32 bg-[#0D1B2A]">
         <div className="max-w-[1400px] mx-auto px-6 md:px-12 lg:px-16">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
