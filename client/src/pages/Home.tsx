@@ -420,7 +420,7 @@ export default function Home() {
             <div className="relative flex items-center justify-center lg:justify-end">
               <div className="absolute w-[500px] h-[500px] rounded-full bg-[#E8341A]/10 blur-[100px] pointer-events-none" />
               <div className="absolute w-[300px] h-[300px] rounded-full bg-[#4FC3F7]/8 blur-[80px] pointer-events-none translate-x-20" />
-              <div className="relative z-10 w-full max-w-[560px]">
+              <div className="relative z-10 w-full max-w-[640px]">
                 <img src={IMGS.hero} alt="ClawPool AI Dock"
                   className="w-full h-auto object-contain"
                   style={{ filter: "drop-shadow(0 20px 60px rgba(0,0,0,0.6)) drop-shadow(0 0 40px rgba(232,52,26,0.15))" }} />
