@@ -592,8 +592,8 @@ export default function Home() {
                 "https://d2xsxph8kpxj0f.cloudfront.net/310519663430257498/jfDsKVzTVmzoN4bJ42z8Cq/storyboard_01_sd_insert-4GHtBU2Lomkzkix5UtLuR3.webp",
                 "https://d2xsxph8kpxj0f.cloudfront.net/310519663430257498/jfDsKVzTVmzoN4bJ42z8Cq/storyboard_02_voice_command-U7CUbsZE7izL3965YEwydP.webp",
                 "https://d2xsxph8kpxj0f.cloudfront.net/310519663430257498/jfDsKVzTVmzoN4bJ42z8Cq/storyboard_03_ai_processing-gtRezA3WjRFZNSgkyv9Yfx.webp",
-                "https://d2xsxph8kpxj0f.cloudfront.net/310519663430257498/jfDsKVzTVmzoN4bJ42z8Cq/storyboard_04_ai_response-gGQZcuH5TmhtMRcPDZZEL9.webp",
-                "https://d2xsxph8kpxj0f.cloudfront.net/310519663430257498/jfDsKVzTVmzoN4bJ42z8Cq/storyboard_05_result-Z9XvYXrHUdvYwNsw4MvyvU.webp",
+                "https://d2xsxph8kpxj0f.cloudfront.net/310519663430257498/jfDsKVzTVmzoN4bJ42z8Cq/storyboard_04_v2-aYTSQVyutdV4QRiA7pskrv.webp",
+                "https://d2xsxph8kpxj0f.cloudfront.net/310519663430257498/jfDsKVzTVmzoN4bJ42z8Cq/storyboard_05_v2-NQnFH4qGQG3gBe3cNuYJCP.webp",
               ].map((src, i) => (
                 <img
                   key={i}
